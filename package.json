@@ -1,0 +1,32 @@
+{
+  "name": "papyrith",
+  "version": "0.0.1",
+  "description": "",
+  "bin": "main.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cadpnq/papyrithjs.git"
+  },
+  "keywords": [
+    "papyrus"
+  ],
+  "author": "Nicky Nickell <nicky.nickell@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cadpnq/papyrithjs/issues"
+  },
+  "homepage": "https://github.com/cadpnq/papyrithjs#readme",
+  "dependencies": {
+    "yargonaut": "^1.1.4",
+    "yargs": "^15.3.1"
+  },
+  "pkg": {
+    "targets": [
+      "node12-win-x64"
+    ]
+  },
+  "scripts": {
+    "build": "pkg ."
+  }
+}
