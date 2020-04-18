@@ -24,7 +24,8 @@
   "pkg": {
     "targets": [
       "node12-win-x64"
-    ]
+    ],
+    "scripts": "src/commands/*.js"
   },
   "scripts": {
     "build": "pkg ."
