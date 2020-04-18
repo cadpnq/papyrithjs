@@ -1,1 +1,1 @@
-# papyrithjs
+# papyrith.js
