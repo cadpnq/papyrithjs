@@ -2,6 +2,7 @@ const PapyrusBase = require('./PapyrusBase');
 
 module.exports = class PapyrusPropertyGroup extends PapyrusBase {
   constructor() {
+    super();
     this.name = '';
     this.userFlags = 0;
     this.docString = '';

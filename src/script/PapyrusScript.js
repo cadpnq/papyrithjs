@@ -1,6 +1,7 @@
 const fs = require('fs');
 const PapyrusBase = require('./PapyrusBase');
 const PapyrusObject = require('./PapyrusObject');
+const PapyrusPropertyGroup = require('./PapyrusPropertyGroup');
 const PexReader = require('./../pex/PexReader');
 const PasReader = require('./../reader/PasReader');
 
@@ -134,6 +135,43 @@ module.exports = class PapyrusScript extends PapyrusBase {
     while (objectCount--) {
       let object = PapyrusObject.readPex(pex);
       script.objectTable[object.name] = object;
+    }
+
+    if (hasDebug) {
+      for (let {objectName, stateName, functionName, functionType, instructionCount, lineNumbers} of functionInfo) {
+
+        // optional chaining when?
+        let func;
+        if (functionType == 0) {
+          if (!script.objectTable[objectName] || !script.objectTable[objectName].stateTable[stateName] || !script.objectTable[objectName].stateTable[stateName].functions[functionName]) continue;
+          func = script.objectTable[objectName].stateTable[stateName].functions[functionName];
+        } else if (functionType == 1 || functionType == 2) {
+          if (!script.objectTable[objectName] ||
+              !script.objectTable[objectName].propertyTable[functionName]) continue;
+          let property = script.objectTable[objectName].propertyTable[functionName];
+          if (functionType == 1) {
+            func = property.Get;
+          } else if (functionType == 2) {
+            func = property.Set;
+          }
+        }
+
+        if (func) {
+          for (let i = 0; i < instructionCount; i++) {
+            func.code[i].line = lineNumbers[i];
+          }
+        }
+      }
+
+      for (let {objectName, groupName, docString, userFlags, properties} of groupInfo) {
+        if (!script.objectTable[objectName]) continue;
+        let propertyGroup = new PapyrusPropertyGroup();
+        propertyGroup.groupName = groupName;
+        propertyGroup.docString = docString;
+        propertyGroup.userFlags = userFlags;
+        propertyGroup.properties = properties;
+        script.objectTable[objectName].propertyGroupTable[groupName] = propertyGroup;
+      }
     }
 
     return script;
