@@ -29,8 +29,8 @@ module.exports = class PapyrusProperty extends PapyrusBase {
     property.name = pex.readTableString();
     property.type = pex.readTableString();
     property.docString = pex.readTableString();
-    property.userFlags = pex.readInt32();
-    let flags = pex.readInt8();
+    property.userFlags = pex.readUInt32();
+    let flags = pex.readUInt8();
 
     if (flags & 4) {
       property.auto = true;

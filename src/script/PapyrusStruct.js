@@ -19,7 +19,7 @@ module.exports = class PapyrusStruct extends PapyrusBase {
 
     struct.name = pex.readTableString();
 
-    let count = pex.readInt16();
+    let count = pex.readUInt16();
     while (count--) {
       let variable = PapyrusVariable.readPex(pex, true);
       struct.members[variable.name] = variable;

@@ -50,23 +50,23 @@ module.exports = class PapyrusScript extends PapyrusBase {
     let script = new PapyrusScript();
     let pex = new PexReader(buffer);
 
-    if (pex.readInt32() != 0xFA57C0DE) {
+    if (pex.readUInt32() != 0xFA57C0DE) {
       // this isn't a valid script file
       return script;
     }
 
     // should probably verify these as well or something
-    let major = pex.readInt8();
-    let minor = pex.readInt8();
-    let gameId = pex.readInt16();
+    let major = pex.readUInt8();
+    let minor = pex.readUInt8();
+    let gameId = pex.readUInt16();
 
-    script.info.compileTime = pex.readInt64();
+    script.info.compileTime = pex.readUInt64();
 
     script.info.source = pex.readString();
     script.info.user = pex.readString();
     script.info.computer = pex.readString();
 
-    let strings = pex.readInt16();
+    let strings = pex.readUInt16();
     for (let i = 0; i < strings; i++) {
       pex.stringTable[i.toString()] = pex.readString();
     }
@@ -74,34 +74,34 @@ module.exports = class PapyrusScript extends PapyrusBase {
     let functionInfo = [];
     let groupInfo = [];
     let structInfo = [];
-    let hasDebug = pex.readInt8();
+    let hasDebug = pex.readUInt8();
     if (hasDebug) {
-      script.info.modifyTime = pex.readInt64();
+      script.info.modifyTime = pex.readUInt64();
 
-      let count = pex.readInt16();
+      let count = pex.readUInt16();
       while (count--) {
         let info = {
           objectName: pex.readTableString(),
           stateName: pex.readTableString(),
           functionName: pex.readTableString(),
-          functionType: pex.readInt8(),
-          instructionCount: pex.readInt16(),
+          functionType: pex.readUInt8(),
+          instructionCount: pex.readUInt16(),
           lineNumbers: []
         };
         for (let i = 0; i < info.instructionCount; i++) {
-          info.lineNumbers.push(pex.readInt16());
+          info.lineNumbers.push(pex.readUInt16());
         }
         functionInfo.push(info);
       }
 
-      count = pex.readInt16();
+      count = pex.readUInt16();
       while (count--) {
         let info = {
           objectName: pex.readTableString(),
           groupName: pex.readTableString(),
           docString: pex.readTableString(),
-          userFlags: pex.readInt32(),
-          propertyCount: pex.readInt16(),
+          userFlags: pex.readUInt32(),
+          propertyCount: pex.readUInt16(),
           properties: []
         };
         for (let i = 0; i < info.propertyCount; i++) {
@@ -110,12 +110,12 @@ module.exports = class PapyrusScript extends PapyrusBase {
         groupInfo.push(info);
       }
 
-      count = pex.readInt16();
+      count = pex.readUInt16();
       while (count--) {
         let info = {
           objectName: pex.readTableString(),
           structName: pex.readTableString(),
-          count: pex.readInt16(),
+          count: pex.readUInt16(),
           names: []
         };
         for (let i = 0; i < info.count; i++) {
@@ -124,14 +124,14 @@ module.exports = class PapyrusScript extends PapyrusBase {
       }
     }
 
-    let flagCount = pex.readInt16();
+    let flagCount = pex.readUInt16();
 
     while (flagCount--) {
       let name = pex.readTableString();
-      script.userFlagsRef[name] = pex.readInt8();
+      script.userFlagsRef[name] = pex.readUInt8();
     }
 
-    let objectCount = pex.readInt16();
+    let objectCount = pex.readUInt16();
     while (objectCount--) {
       let object = PapyrusObject.readPex(pex);
       script.objectTable[object.name] = object;

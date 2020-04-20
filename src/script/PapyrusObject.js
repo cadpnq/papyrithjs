@@ -50,33 +50,33 @@ module.exports = class PapyrusObject extends PapyrusBase {
 
     object.name = pex.readTableString();
 
-    let size = pex.readInt32();
+    let size = pex.readUInt32();
 
     object.extends = pex.readTableString();
     object.docString = pex.readTableString();
-    object.const = pex.readInt8() ? true : false;
-    object.userFlags = pex.readInt32();
+    object.const = pex.readUInt8() ? true : false;
+    object.userFlags = pex.readUInt32();
     object.autoState = pex.readTableString();
 
-    let count = pex.readInt16();
+    let count = pex.readUInt16();
     while (count--) {
       let struct = PapyrusStruct.readPex(pex);
       object.structTable[struct.name] = struct;
     }
 
-    count = pex.readInt16();
+    count = pex.readUInt16();
     while (count--) {
       let variable = PapyrusVariable.readPex(pex);
       object.variableTable[variable.name] = variable;
     }
 
-    count = pex.readInt16();
+    count = pex.readUInt16();
     while (count--) {
       let property = PapyrusProperty.readPex(pex);
       object.propertyTable[property.name] = property;
     }
 
-    count = pex.readInt16();
+    count = pex.readUInt16();
     while (count--) {
       let state = PapyrusState.readPex(pex);
       object.stateTable[state.name] = state;

@@ -33,7 +33,7 @@ class PapyrusInstruction extends PapyrusBase {
   static readPex(pex) {
     let instruction = new PapyrusInstruction();
 
-    let op = pex.readInt8();
+    let op = pex.readUInt8();
     let {name, args, varargs} = this.definitions[op];
     instruction.op = name;
 

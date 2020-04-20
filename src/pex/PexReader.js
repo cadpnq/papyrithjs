@@ -5,22 +5,22 @@ module.exports = class PexReader {
     this.stringTable = {};
   }
 
-  readInt8() {
+  readUInt8() {
     this.offset += 1;
     return this.buffer.readUInt8(this.offset - 1);
   }
 
-  readInt16() {
+  readUInt16() {
     this.offset += 2;
     return this.buffer.readUInt16LE(this.offset - 2);
   }
 
-  readInt32() {
+  readUInt32() {
     this.offset += 4;
     return this.buffer.readUInt32LE(this.offset - 4);
   }
 
-  readInt64() {
+  readUInt64() {
     this.offset += 8;
     return this.buffer.readBigUInt64LE(this.offset - 8);
   }
@@ -31,13 +31,13 @@ module.exports = class PexReader {
   }
 
   readString() {
-    let length = this.readInt16();
+    let length = this.readUInt16();
     this.offset += length;
     return this.buffer.toString('utf8', this.offset - length, this.offset);
   }
 
   readTableString() {
-    let index = this.readInt16();
+    let index = this.readUInt16();
     if (this.stringTable[index]) {
       return this.stringTable[index];
     } else {
@@ -46,7 +46,7 @@ module.exports = class PexReader {
   }
 
   readValue() {
-    let type = this.readInt8();
+    let type = this.readUInt8();
     switch (type) {
       case 0:
         return 0;
@@ -54,11 +54,11 @@ module.exports = class PexReader {
       case 2:
         return this.readTableString();
       case 3:
-        return this.readInt32();
+        return this.readUInt32();
       case 4:
         return this.readFloat();
       case 5:
-        return this.readInt8();
+        return this.readUInt8();
     }
   }
 }

@@ -38,20 +38,20 @@ module.exports = class PapyrusFunction extends PapyrusBase {
     }
     func.return = pex.readTableString();
     func.docString = pex.readTableString();
-    func.userFlags = pex.readInt32();
-    func.flags = pex.readInt8();
+    func.userFlags = pex.readUInt32();
+    func.flags = pex.readUInt8();
 
-    let count = pex.readInt16();
+    let count = pex.readUInt16();
     while (count--) {
       func.params[pex.readTableString()] = pex.readTableString();
     }
 
-    count = pex.readInt16();
+    count = pex.readUInt16();
     while (count-- > 0) {
       func.locals[pex.readTableString()] = pex.readTableString();
     }
 
-    count = pex.readInt16();
+    count = pex.readUInt16();
     while (count--) {
       func.code.push(PapyrusInstruction.readPex(pex));
     }

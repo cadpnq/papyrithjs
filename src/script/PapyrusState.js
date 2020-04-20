@@ -18,7 +18,7 @@ module.exports = class PapyrusState extends PapyrusBase{
     let state = new PapyrusState();
     state.name = pex.readTableString();
 
-    let count = pex.readInt16();
+    let count = pex.readUInt16();
     while (count--) {
       let func = PapyrusFunction.readPex(pex);
       state.functions[func.name] = func;
