@@ -5,7 +5,7 @@ class PapyrusInstruction extends PapyrusBase {
     super();
     this.op = '';
     this.name = '';
-    this.arguments = [];
+    this.args = [];
     this.line = 0;
   }
 
@@ -13,7 +13,7 @@ class PapyrusInstruction extends PapyrusBase {
     if (this.op == 'label') {
       return this.name;
     } else {
-      return `${this.op} ${this.arguments.join(' ')} ${this.line ? `;@line ${this.line}` : ''}`;
+      return `${this.op} ${this.args.join(' ')} ${this.line ? `;@line ${this.line}` : ''}`;
     }
   }
 
@@ -38,13 +38,13 @@ class PapyrusInstruction extends PapyrusBase {
     instruction.op = name;
 
     while (args--) {
-      instruction.arguments.push(pex.readValue());
+      instruction.args.push(pex.readValue());
     }
 
     if (varargs) {
       let count = pex.readValue();
       while (count--) {
-        instruction.arguments.push(pex.readValue());
+        instruction.args.push(pex.readValue());
       }
     }
 
@@ -61,10 +61,10 @@ class PapyrusInstruction extends PapyrusBase {
       instruction.name = name;
     } else {
       instruction.op = name;
-      instruction.arguments = [];
+      instruction.args = [];
 
       while (tokens.peek() != '\n' && tokens.peek() != ';@line') {
-        instruction.arguments.push(tokens.read());
+        instruction.args.push(tokens.read());
       }
 
       if (tokens.peek() == ';@line') {
