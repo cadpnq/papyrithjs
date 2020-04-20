@@ -20,6 +20,11 @@ module.exports = class PexReader {
     return this.buffer.readUInt32LE(this.offset - 4);
   }
 
+  readInt32() {
+    this.offset += 4;
+    return this.buffer.readInt32LE(this.offset - 4);
+  }
+
   readUInt64() {
     this.offset += 8;
     return this.buffer.readBigUInt64LE(this.offset - 8);
@@ -54,7 +59,7 @@ module.exports = class PexReader {
       case 2:
         return this.readTableString();
       case 3:
-        return this.readUInt32();
+        return this.readInt32();
       case 4:
         return this.readFloat();
       case 5:
