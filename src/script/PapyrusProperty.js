@@ -8,7 +8,7 @@ module.exports = class PapyrusProperty extends PapyrusBase {
     this.type = '';
     this.auto = false;
     this.userFlags = 0;
-    this.docString = '';
+    this.docString = '""';
     this.autoVar = '';
     this.Get;
     this.Set;
@@ -28,7 +28,7 @@ module.exports = class PapyrusProperty extends PapyrusBase {
 
     property.name = pex.readTableString();
     property.type = pex.readTableString();
-    property.docString = pex.readTableString();
+    property.docString = pex.readTableString(true);
     property.userFlags = pex.readUInt32();
     let flags = pex.readUInt8();
 

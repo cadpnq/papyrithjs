@@ -28,7 +28,7 @@ module.exports = class PapyrusVariable extends PapyrusBase {
     variable.userFlags = pex.readUInt32();
     variable.initialValue = pex.readValue();
     variable.const = pex.readUInt8() ? true : false;
-    if (inStruct) variable.docString = pex.readTableString();
+    if (inStruct) variable.docString = pex.readTableString(true);
 
     return variable;
   }

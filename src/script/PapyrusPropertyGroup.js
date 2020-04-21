@@ -5,7 +5,7 @@ module.exports = class PapyrusPropertyGroup extends PapyrusBase {
     super();
     this.name = '';
     this.userFlags = 0;
-    this.docString = '';
+    this.docString = '""';
     this.properties = [];
   }
 

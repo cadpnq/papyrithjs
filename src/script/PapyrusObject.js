@@ -12,7 +12,7 @@ module.exports = class PapyrusObject extends PapyrusBase {
     this.extends = '';
     this.const = false;
     this.userFlags = 0;
-    this.docString = '';
+    this.docString = '""';
     this.autoState = '';
 
     this.structTable = {};
@@ -53,7 +53,7 @@ module.exports = class PapyrusObject extends PapyrusBase {
     let size = pex.readUInt32();
 
     object.extends = pex.readTableString();
-    object.docString = pex.readTableString();
+    object.docString = pex.readTableString(true);
     object.const = pex.readUInt8() ? true : false;
     object.userFlags = pex.readUInt32();
     object.autoState = pex.readTableString();

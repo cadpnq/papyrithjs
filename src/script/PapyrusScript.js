@@ -62,9 +62,9 @@ module.exports = class PapyrusScript extends PapyrusBase {
 
     script.info.compileTime = pex.readUInt64();
 
-    script.info.source = JSON.stringify(pex.readString());
-    script.info.user = JSON.stringify(pex.readString());
-    script.info.computer = JSON.stringify(pex.readString());
+    script.info.source = pex.readString(true);
+    script.info.user = pex.readString(true);
+    script.info.computer = pex.readString(true);
 
     let strings = pex.readUInt16();
     for (let i = 0; i < strings; i++) {
@@ -99,7 +99,7 @@ module.exports = class PapyrusScript extends PapyrusBase {
         let info = {
           objectName: pex.readTableString(),
           groupName: pex.readTableString(),
-          docString: pex.readTableString(),
+          docString: pex.readTableString(true),
           userFlags: pex.readUInt32(),
           propertyCount: pex.readUInt16(),
           properties: []

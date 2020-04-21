@@ -7,7 +7,7 @@ module.exports = class PapyrusFunction extends PapyrusBase {
     this.name = '';
     this.static = false;
     this.userFlags = 0;
-    this.docString = '';
+    this.docString = '""';
     this.return = '';
     this.params = {};
     this.locals = {};
@@ -37,7 +37,7 @@ module.exports = class PapyrusFunction extends PapyrusBase {
       func.name = pex.readTableString();
     }
     func.return = pex.readTableString();
-    func.docString = pex.readTableString();
+    func.docString = pex.readTableString(true);
     func.userFlags = pex.readUInt32();
     func.flags = pex.readUInt8();
 
