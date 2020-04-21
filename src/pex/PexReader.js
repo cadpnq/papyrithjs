@@ -35,19 +35,23 @@ module.exports = class PexReader {
     return this.buffer.readFloatLE(this.offset - 4);
   }
 
-  readString() {
+  readString(stringify = false) {
     let length = this.readUInt16();
     this.offset += length;
-    return this.buffer.toString('utf8', this.offset - length, this.offset);
+    let string = this.buffer.toString('utf8', this.offset - length, this.offset);
+    if (stringify)
+      string = JSON.stringify(string);
+    return string;
   }
 
-  readTableString() {
+  readTableString(stringify = false) {
     let index = this.readUInt16();
-    if (this.stringTable[index]) {
-      return this.stringTable[index];
-    } else {
-      return '';
-    }
+    let string = '';
+    if (this.stringTable[index])
+      string = this.stringTable[index];
+    if (stringify)
+      string = JSON.stringify(string);
+    return string;
   }
 
   readValue() {
