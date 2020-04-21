@@ -174,6 +174,18 @@ module.exports = class PapyrusScript extends PapyrusBase {
       }
     }
 
+    for (let object of Object.values(script.objectTable)) {
+      for (let property of Object.values(object.propertyTable)) {
+        if (property.Get) property.Get.generateLabels();
+        if (property.Set) property.Set.generateLabels();
+      }
+      for (let state of Object.values(object.stateTable)) {
+        for (let func of Object.values(state.functions)) {
+          func.generateLabels();
+        }
+      }
+    }
+
     return script;
   }
 

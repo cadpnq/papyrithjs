@@ -57,49 +57,6 @@ module.exports = class PapyrusFunction extends PapyrusBase {
       code.push(PapyrusInstruction.readPex(pex));
     }
 
-    for (let i = 0; i < code.length; i++) {
-      code[i].index = i;
-    }
-
-    let labelNumber = 0;
-    let maxIndex = code.length - 1;
-    for (let i = 0; i < code.length; i++) {
-      let {op, args, index} = code[i];
-      if (op != 'jump' && op != 'jumpt' && op != 'jumpf') continue;
-
-      let labelName = `label${labelNumber++}`;
-      let label = new PapyrusInstruction();
-      label.op = 'label';
-      label.name = `${labelName}:`;
-
-      let target;
-      if (op == 'jump') {
-        target = args[0];
-        args[0] = labelName;
-      } else {
-        target = args[1];
-        args[1] = labelName;
-      }
-      let targetIndex = target + index;
-
-      if (target < 0) i++;
-
-      if (targetIndex > maxIndex) {
-        code.push(label);
-      } else {
-        for (let j = 0; j < code.length; j++) {
-          if (code[j].index == targetIndex) {
-            code.splice(j, 0, label);
-            break;
-          }
-        }
-      }
-    }
-
-    for (let i = 0; i < code.length; i++) {
-      delete code[i].index;
-    }
-
     return func;
   }
 
@@ -138,5 +95,50 @@ module.exports = class PapyrusFunction extends PapyrusBase {
     tokens.expect('.endFunction');
 
     return func;
+  }
+
+  generateLabels() {
+    for (let i = 0; i < this.code.length; i++) {
+      this.code[i].index = i;
+    }
+
+    let labelNumber = 0;
+    let maxIndex = this.code.length - 1;
+    for (let i = 0; i < this.code.length; i++) {
+      let {op, args, index} = this.code[i];
+      if (op != 'jump' && op != 'jumpt' && op != 'jumpf') continue;
+
+      let labelName = `label${labelNumber++}`;
+      let label = new PapyrusInstruction();
+      label.op = 'label';
+      label.name = `${labelName}:`;
+
+      let target;
+      if (op == 'jump') {
+        target = args[0];
+        args[0] = labelName;
+      } else {
+        target = args[1];
+        args[1] = labelName;
+      }
+      let targetIndex = target + index;
+
+      if (target < 0) i++;
+
+      if (targetIndex > maxIndex) {
+        this.code.push(label);
+      } else {
+        for (let j = 0; j < this.code.length; j++) {
+          if (this.code[j].index == targetIndex) {
+            this.code.splice(j, 0, label);
+            break;
+          }
+        }
+      }
+    }
+
+    for (let i = 0; i < this.code.length; i++) {
+      delete this.code[i].index;
+    }
   }
 }
