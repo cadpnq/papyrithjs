@@ -56,8 +56,9 @@ module.exports = class PexReader {
       case 0:
         return 0;
       case 1:
-      case 2:
         return this.readTableString();
+      case 2:
+        return JSON.stringify(this.readTableString());
       case 3:
         return this.readInt32();
       case 4:

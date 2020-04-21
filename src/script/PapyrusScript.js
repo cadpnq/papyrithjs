@@ -62,9 +62,9 @@ module.exports = class PapyrusScript extends PapyrusBase {
 
     script.info.compileTime = pex.readUInt64();
 
-    script.info.source = pex.readString();
-    script.info.user = pex.readString();
-    script.info.computer = pex.readString();
+    script.info.source = JSON.stringify(pex.readString());
+    script.info.user = JSON.stringify(pex.readString());
+    script.info.computer = JSON.stringify(pex.readString());
 
     let strings = pex.readUInt16();
     for (let i = 0; i < strings; i++) {
