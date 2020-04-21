@@ -166,7 +166,7 @@ module.exports = class PapyrusScript extends PapyrusBase {
       for (let {objectName, groupName, docString, userFlags, properties} of groupInfo) {
         if (!script.objectTable[objectName]) continue;
         let propertyGroup = new PapyrusPropertyGroup();
-        propertyGroup.groupName = groupName;
+        propertyGroup.name = groupName;
         propertyGroup.docString = docString;
         propertyGroup.userFlags = userFlags;
         propertyGroup.properties = properties;
