@@ -68,7 +68,7 @@ module.exports = class PexReader {
       case 4:
         return this.readFloat();
       case 5:
-        return this.readUInt8();
+        return this.readUInt8() ? true : false;
     }
   }
 }
