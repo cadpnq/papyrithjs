@@ -7,7 +7,7 @@ module.exports = class PapyrusFunction extends PapyrusBase {
     this.name = '';
     this.static = false;
     this.userFlags = 0;
-    this.docString = '""';
+    this.docString = '';
     this.return = '';
     this.params = {};
     this.locals = {};
@@ -18,7 +18,7 @@ module.exports = class PapyrusFunction extends PapyrusBase {
   asPas() {
     return `.function ${this.name}\n` +
            `  .userFlags ${this.userFlags}\n` +
-           `  .docString ${this.docString}\n` +
+           `  .docString ${JSON.stringify(this.docString)}\n` +
            `  .return ${this.return}\n` +
            `  .paramTable\n` +
            (Object.keys(this.params).length ? `${this._printSimpleTable(this.params, '.param', 4)}\n` : '') +
@@ -38,7 +38,7 @@ module.exports = class PapyrusFunction extends PapyrusBase {
       func.name = pex.readTableString();
     }
     func.return = pex.readTableString();
-    func.docString = pex.readTableString(true);
+    func.docString = pex.readTableString();
     func.userFlags = pex.readUInt32();
     func.flags = pex.readUInt8();
 

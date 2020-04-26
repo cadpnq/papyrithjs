@@ -8,7 +8,7 @@ module.exports = class PapyrusProperty extends PapyrusBase {
     this.type = '';
     this.auto = false;
     this.userFlags = 0;
-    this.docString = '""';
+    this.docString = '';
     this.autoVar = '';
     this.Get;
     this.Set;
@@ -17,7 +17,8 @@ module.exports = class PapyrusProperty extends PapyrusBase {
   asPas() {
     return `.property ${this.name} ${this.type} ${this.auto ? 'auto' : ''}\n` +
            `  .userFlags ${this.userFlags}\n` +
-           `  .docString ${this.docString} ${this.auto ? `\n  .autoVar ${this.autoVar}` : ''}\n` +
+           `  .docString ${JSON.stringify(this.docString)}` +
+           ` ${this.auto ? `\n  .autoVar ${this.autoVar}` : ''}\n` +
            `${this.Get ? `${this._indent(this.Get.asPas(), 2)}\n` : ''}` +
            `${this.Set ? `${this._indent(this.Set.asPas(), 2)}\n` : ''}` +
            `.endProperty`;
@@ -28,7 +29,7 @@ module.exports = class PapyrusProperty extends PapyrusBase {
 
     property.name = pex.readTableString();
     property.type = pex.readTableString();
-    property.docString = pex.readTableString(true);
+    property.docString = pex.readTableString();
     property.userFlags = pex.readUInt32();
     let flags = pex.readUInt8();
 

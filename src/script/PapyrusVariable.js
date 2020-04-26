@@ -17,7 +17,7 @@ module.exports = class PapyrusVariable extends PapyrusBase {
     return `.variable ${this.name} ${this.type}${this.const ? ' const' : ''}\n` +
            `  .userFlags ${this.userFlags}\n` +
            `  .initialValue ${this.initialValue} ` +
-           `${this.docString ? `\n  .docString ${this.docString}` : ''}\n` +
+           `${this.docString ? `\n  .docString ${JSON.stringify(this.docString)}` : ''}\n` +
            `.endVariable`;
   }
 
@@ -29,7 +29,7 @@ module.exports = class PapyrusVariable extends PapyrusBase {
     variable.userFlags = pex.readUInt32();
     variable.initialValue = pex.readValue();
     variable.const = pex.readUInt8() ? true : false;
-    if (inStruct) variable.docString = pex.readTableString(true);
+    if (inStruct) variable.docString = pex.readTableString();
 
     return variable;
   }

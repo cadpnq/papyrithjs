@@ -9,11 +9,11 @@ module.exports = class PapyrusScript extends PapyrusBase {
   constructor() {
     super();
     this.info = {
-      source: '""',
+      source: '',
       modifyTime: 0,
       compileTime: 0,
-      user: '""',
-      computer: '""'
+      user: '',
+      computer: ''
     };
     this.userFlagsRef = {};
     this.objectTable = {};
@@ -21,11 +21,11 @@ module.exports = class PapyrusScript extends PapyrusBase {
 
   asPas() {
     return `.info\n` +
-           `  .source ${this.info.source}\n` +
+           `  .source ${JSON.stringify(this.info.source)}\n` +
            `  .modifyTime ${this.info.modifyTime}\n` +
            `  .compileTime ${this.info.compileTime}\n` +
-           `  .user ${this.info.user}\n` +
-           `  .computer ${this.info.computer}\n` +
+           `  .user ${JSON.stringify(this.info.user)}\n` +
+           `  .computer ${JSON.stringify(this.info.computer)}\n` +
            `.endInfo\n` +
            `.userFlagsRef\n` +
            `${this._printSimpleTable(this.userFlagsRef, '.flag', 2)}\n` +
@@ -62,9 +62,9 @@ module.exports = class PapyrusScript extends PapyrusBase {
 
     script.info.compileTime = pex.readUInt64();
 
-    script.info.source = pex.readString(true);
-    script.info.user = pex.readString(true);
-    script.info.computer = pex.readString(true);
+    script.info.source = pex.readString();
+    script.info.user = pex.readString();
+    script.info.computer = pex.readString();
 
     let strings = pex.readUInt16();
     for (let i = 0; i < strings; i++) {
@@ -99,7 +99,7 @@ module.exports = class PapyrusScript extends PapyrusBase {
         let info = {
           objectName: pex.readTableString(),
           groupName: pex.readTableString(),
-          docString: pex.readTableString(true),
+          docString: pex.readTableString(),
           userFlags: pex.readUInt32(),
           propertyCount: pex.readUInt16(),
           properties: []
