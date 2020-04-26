@@ -32,9 +32,9 @@ module.exports = class PapyrusFunction extends PapyrusBase {
            `.endFunction`;
   }
 
-  static readPex(pex, isNamed = false) {
-    let func = new PapyrusFunction();
-    if (!isNamed) {
+  static readPex(pex, isNamed = true) {
+    let func = new PapyrusFunction(isNamed);
+    if (isNamed) {
       func.name = pex.readTableString();
     }
     func.return = pex.readTableString();

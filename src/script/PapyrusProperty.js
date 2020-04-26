@@ -37,13 +37,13 @@ module.exports = class PapyrusProperty extends PapyrusBase {
       property.autoVar = pex.readTableString();
     } else {
       if ((flags & 1) == 1) {
-        let getter = PapyrusFunction.readPex(pex, true);
+        let getter = PapyrusFunction.readPex(pex, false);
         getter.name = 'Get';
         property.Get = getter;
       }
 
       if ((flags & 2) == 2) {
-        let setter = PapyrusFunction.readPex(pex, true);
+        let setter = PapyrusFunction.readPex(pex, false);
         setter.name = 'Set';
         property.Set = setter;
       }
