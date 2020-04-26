@@ -2,7 +2,7 @@ const PapyrusBase = require('./PapyrusBase');
 const PapyrusInstruction = require('./PapyrusInstruction');
 
 module.exports = class PapyrusFunction extends PapyrusBase {
-  constructor() {
+  constructor(isNamed = true) {
     super();
     this.name = '';
     this.static = false;
@@ -12,6 +12,7 @@ module.exports = class PapyrusFunction extends PapyrusBase {
     this.params = {};
     this.locals = {};
     this.code = [];
+    this.isNamed = isNamed;
   }
 
   asPas() {
