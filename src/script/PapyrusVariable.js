@@ -2,7 +2,7 @@ const PapyrusBase = require('./PapyrusBase');
 const PapyrusVariable = require('./PapyrusVariable');
 
 module.exports = class PapyrusVariable extends PapyrusBase {
-  constructor() {
+  constructor(inStruct = false) {
     super();
     this.name = '';
     this.type = '';
@@ -10,6 +10,7 @@ module.exports = class PapyrusVariable extends PapyrusBase {
     this.userFlags = 0;
     this.initialValue = 'None';
     this.docString = '';
+    this.inStruct = inStruct;
   }
 
   asPas() {
@@ -21,7 +22,7 @@ module.exports = class PapyrusVariable extends PapyrusBase {
   }
 
   static readPex(pex, inStruct = false) {
-    let variable = new PapyrusVariable();
+    let variable = new PapyrusVariable(inStruct);
 
     variable.name = pex.readTableString();
     variable.type = pex.readTableString();
