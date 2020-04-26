@@ -97,10 +97,8 @@ module.exports = class PapyrusObject extends PapyrusBase {
     object.docString = tokens.read1('.docString');
     object.autoState = '';
     tokens.expect('.autoState', false);
-    if (tokens.peek() != '\n') {
-      object.autoState = tokens.read();
-      tokens.expectEOL();
-    }
+    if (tokens.peek() != '\n') object.autoState = tokens.read();
+    tokens.expectEOL();
 
     object.structTable = tokens.readTable('struct', PapyrusStruct);
     object.variableTable = tokens.readTable('variable', PapyrusVariable);
