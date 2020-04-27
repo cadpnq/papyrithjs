@@ -4,7 +4,8 @@
   "description": "",
   "bin": "main.js",
   "scripts": {
-    "build": "pkg ."
+    "build": "pkg .",
+    "test": "mocha -r chai/register-assert -R spec"
   },
   "repository": {
     "type": "git",
@@ -28,5 +29,9 @@
       "node12-win-x64"
     ],
     "scripts": "src/commands/*.js"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.1.2"
   }
 }
