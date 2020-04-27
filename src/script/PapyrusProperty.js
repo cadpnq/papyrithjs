@@ -78,4 +78,33 @@ module.exports = class PapyrusProperty extends PapyrusBase {
 
     return property;
   }
+
+  writePex(pex) {
+    pex.writeTableString(this.name);
+    pex.writeTableString(this.type);
+    pex.writeTableString(this.docString);
+    pex.writeUInt32(this.userFlags);
+
+    if (this.auto) {
+      pex.writeUInt8(4);
+      pex.writeTableString(this.autoVar);
+    } else {
+      let flags = 0;
+      if (this.Get) flags &= 1;
+      if (this.Set) flags &= 2;
+      pex.writeUInt8(flags);
+      if (this.Get) this.Get.writePex(pex);
+      if (this.Set) this.Set.writePex(pex);
+    }
+  }
+
+  getStrings() {
+    return [
+      this.name,
+      this.type,
+      this.docString,
+      ...(this.Get ? this.Get.getStrings() : []),
+      ...(this.Set ? this.Set.getStrings() : [])
+    ];
+  }
 }

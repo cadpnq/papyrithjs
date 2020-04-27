@@ -47,4 +47,19 @@ module.exports = class PapyrusState extends PapyrusBase{
 
     return state;
   }
+
+  writePex(pex) {
+    pex.writeTableString(this.name);
+
+    let functions = Object.values(this.functions);
+    pex.writeUInt16(functions.length);
+    functions.map((f) => f.writePex(pex));
+  }
+
+  getStrings() {
+    return [
+      this.name,
+      ...this._getStringsFromTable(this.functions)
+    ];
+  }
 }

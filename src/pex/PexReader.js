@@ -49,22 +49,4 @@ module.exports = class PexReader {
       return '';
     }
   }
-
-  readValue() {
-    let type = this.readUInt8();
-    switch (type) {
-      case 0:
-        return 0;
-      case 1:
-        return this.readTableString();
-      case 2:
-        return JSON.stringify(this.readTableString());
-      case 3:
-        return this.readInt32();
-      case 4:
-        return this.readFloat();
-      case 5:
-        return this.readUInt8() ? true : false;
-    }
-  }
 }

@@ -13,4 +13,18 @@ module.exports = class PapyrusBase {
   _printSimpleTable(table, of, indentation) {
     return this._indent(Object.entries(table).map(([name, type]) => `${of} ${name} ${type}`).join('\n'), indentation);
   }
+
+  _getStringsFromTable(table) {
+    return [].concat(...Object.values(table).map((entry) => {
+      if (entry instanceof PapyrusBase) {
+        return entry.getStrings();
+      } else {
+        return [];
+      }
+    }));
+  }
+
+  getStrings() {
+    return [];
+  }
 }

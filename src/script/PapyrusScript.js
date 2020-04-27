@@ -3,6 +3,7 @@ const PapyrusBase = require('./PapyrusBase');
 const PapyrusObject = require('./PapyrusObject');
 const PapyrusPropertyGroup = require('./PapyrusPropertyGroup');
 const PexReader = require('./../pex/PexReader');
+const PexWriter = require('./../pex/PexWriter');
 const PasReader = require('./../reader/PasReader');
 
 module.exports = class PapyrusScript extends PapyrusBase {
@@ -211,5 +212,52 @@ module.exports = class PapyrusScript extends PapyrusBase {
     script.objectTable = tokens.readTable('object', PapyrusObject);
 
     return script;
+  }
+
+  savePex(path) {
+    let pex = new PexWriter();
+
+    // magic, major, minor, and gameid
+    pex.writeUInt32(0xFA57C0DE);
+    pex.writeUInt8(3);
+    pex.writeUInt8(9);
+    pex.writeUInt16(2);
+
+    pex.writeUInt64(this.info.compileTime);
+
+    pex.writeString(this.info.source);
+    pex.writeString(this.info.user);
+    pex.writeString(this.info.computer);
+
+    let strings = [...new Set(this.getStrings())];
+    pex.writeUInt16(strings.length);
+    for (let i = 0; i < strings.length; i++) {
+      pex.stringTable[strings[i]] = i;
+      pex.writeString(strings[i]);
+    }
+
+    // TODO: write debug info here
+    pex.writeUInt8(0);
+
+    pex.writeUInt16(Object.values(this.userFlagsRef).length);
+    for (let [flag, index] of Object.entries(this.userFlagsRef)) {
+      pex.writeTableString(flag);
+      pex.writeUInt8(index);
+    }
+
+    let objects = Object.values(this.objectTable);
+    pex.writeUInt16(objects.length);
+    for (let object of objects) {
+      object.writePex(pex);
+    }
+
+    return pex;
+  }
+
+  getStrings() {
+    return [
+      ...Object.keys(this.userFlagsRef),
+      ...this._getStringsFromTable(this.objectTable)
+    ];
   }
 }

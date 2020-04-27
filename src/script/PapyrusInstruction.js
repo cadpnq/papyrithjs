@@ -1,4 +1,5 @@
 const PapyrusBase = require('./PapyrusBase');
+const PapyrusValue = require('./PapyrusValue');
 
 class PapyrusInstruction extends PapyrusBase {
   constructor() {
@@ -7,6 +8,7 @@ class PapyrusInstruction extends PapyrusBase {
     this.name = '';
     this.args = [];
     this.line = 0;
+    this.targetOffset = 0;
   }
 
   asPas() {
@@ -20,6 +22,7 @@ class PapyrusInstruction extends PapyrusBase {
   static defineInstruction(opcode, name, args, varargs = false) {
     if (!this.definitions) {
       this.definitions = {};
+      this.prototype.definitions = this.definitions;
     }
     this.definitions[opcode] = {opcode, name, args, varargs};
   }
@@ -38,13 +41,13 @@ class PapyrusInstruction extends PapyrusBase {
     instruction.op = name;
 
     while (args--) {
-      instruction.args.push(pex.readValue());
+      instruction.args.push(PapyrusValue.readPex(pex));
     }
 
     if (varargs) {
-      let count = pex.readValue();
+      let count = PapyrusValue.readPex(pex).value;
       while (count--) {
-        instruction.args.push(pex.readValue());
+        instruction.args.push(PapyrusValue.readPex(pex));
       }
     }
 
@@ -75,6 +78,36 @@ class PapyrusInstruction extends PapyrusBase {
     }
 
     return instruction;
+  }
+
+  writePex(pex) {
+    if (this.op == 'label') return;
+    let arity, varargs;
+    for (let definition of Object.values(this.definitions)) {
+      if (definition.name == this.op) {
+        pex.writeUInt8(definition.opcode);
+        arity = definition.arity;
+        varargs = definition.varargs;
+        break;
+      }
+    }
+
+    for (let i = 0; i < this.args.length; i++) {
+      if (varargs && i == arity) {
+        new PapyrusValue('integer', this.args.length - i).writePex(pex);
+      }
+      let arg = this.args[i];
+      if (arg instanceof PapyrusValue) {
+        arg.writePex(pex);
+      } else {
+        pex.writeUInt8(3);
+        pex.writeInt32(this.targetOffset);
+      }
+    }
+  }
+
+  getStrings() {
+    return this._getStringsFromTable(this.args);
   }
 }
 

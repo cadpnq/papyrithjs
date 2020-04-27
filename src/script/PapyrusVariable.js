@@ -1,4 +1,5 @@
 const PapyrusBase = require('./PapyrusBase');
+const PapyrusValue = require('./PapyrusValue');
 const PapyrusVariable = require('./PapyrusVariable');
 
 module.exports = class PapyrusVariable extends PapyrusBase {
@@ -27,7 +28,7 @@ module.exports = class PapyrusVariable extends PapyrusBase {
     variable.name = pex.readTableString();
     variable.type = pex.readTableString();
     variable.userFlags = pex.readUInt32();
-    variable.initialValue = pex.readValue();
+    variable.initialValue = PapyrusValue.readPex(pex);
     variable.const = pex.readUInt8() ? true : false;
     if (inStruct) variable.docString = pex.readTableString();
 
@@ -52,5 +53,22 @@ module.exports = class PapyrusVariable extends PapyrusBase {
     tokens.expect('.endVariable');
 
     return variable;
+  }
+
+  writePex(pex) {
+    pex.writeTableString(this.name);
+    pex.writeTableString(this.type);
+    pex.writeUInt32(this.userFlags);
+    this.initialValue.writePex(pex);
+    pex.writeUInt8(this.const ? 1 : 0);
+    if (this.inStruct) pex.writeTableString(this.docString);
+  }
+
+  getStrings() {
+    return [
+      this.name,
+      this.type,
+      this.docString
+    ];
   }
 }

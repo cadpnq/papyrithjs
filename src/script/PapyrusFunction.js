@@ -142,4 +142,59 @@ module.exports = class PapyrusFunction extends PapyrusBase {
       delete this.code[i].index;
     }
   }
+
+  writePex(pex) {
+    if (this.isNamed) pex.writeTableString(this.name);
+    pex.writeTableString(this.return);
+    pex.writeTableString(this.docString);
+    pex.writeUInt32(this.userFlags);
+    pex.writeUInt8(this.flags);
+
+    pex.writeUInt16(Object.values(this.params).length);
+    for (let [name, type] of Object.entries(this.params)) {
+      pex.writeTableString(name);
+      pex.writeTableString(type);
+    }
+
+    pex.writeUInt16(Object.values(this.locals).length);
+    for (let [name, type] of Object.entries(this.locals)) {
+      pex.writeTableString(name);
+      pex.writeTableString(type);
+    }
+
+    let labelTable = {};
+    let instructionIndex = 0;
+    for (let instruction of this.code) {
+      if (instruction.op != 'label') {
+        instructionIndex++;
+      } else {
+        labelTable[instruction.name.slice(0, instruction.name.length - 1)] = instructionIndex;
+      }
+    }
+
+    instructionIndex = 0;
+    for (let instruction of this.code) {
+      if (instruction.op == 'label') continue;
+      instructionIndex++;
+      if (instruction.op != 'jump' && instruction.op != 'jumpt' && instruction.op != 'jumpf') continue;
+
+      if (instruction.op == 'jump') {
+        instruction.targetOffset = labelTable[instruction.args[0]] - instructionIndex;
+      } else {
+        instruction.targetOffset = labelTable[instruction.args[1]] - instructionIndex;
+      }
+    }
+
+    pex.writeUInt16(this.code.length);
+    this.code.map((i) => i.writePex(pex));
+  }
+
+  getStrings() {
+    return [
+      this.isNamed ? this.name : '',
+      this.return,
+      this.docString,
+      ...this._getStringsFromTable(this.code)
+    ];
+  }
 }

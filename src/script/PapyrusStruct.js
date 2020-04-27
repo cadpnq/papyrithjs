@@ -40,4 +40,19 @@ module.exports = class PapyrusStruct extends PapyrusBase {
 
     return struct;
   }
+
+  writePex(pex) {
+    pex.writeTableString(this.name);
+
+    let members = Object.values(this.members);
+    pex.writeUInt16(members.length);
+    members.map((m) => m.writePex(pex));
+  }
+
+  getStrings() {
+    return [
+      this.name,
+      ...this._getStringsFromTable(this.members)
+    ];
+  }
 }

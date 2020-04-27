@@ -110,4 +110,49 @@ module.exports = class PapyrusObject extends PapyrusBase {
 
     return object;
   }
+
+  writePex(pex) {
+    pex.writeTableString(this.name);
+
+    let sizeIndex = pex.data().length
+    pex.writeUInt32(0);
+
+    pex.writeTableString(this.extends);
+    pex.writeTableString(this.docString);
+    pex.writeUInt8(this.const ? 1 : 0);
+    pex.writeUInt32(this.userFlags);
+    pex.writeTableString(this.autoState);
+
+    let structs = Object.values(this.structTable);
+    pex.writeUInt16(structs.length);
+    structs.map((s) => s.writePex(pex));
+
+    let variables = Object.values(this.variableTable);
+    pex.writeUInt16(variables.length);
+    variables.map((v) => v.writePex(pex));
+
+    let properties = Object.values(this.propertyTable);
+    pex.writeUInt16(properties.length);
+    properties.map((p) => p.writePex(pex));
+
+    let states = Object.values(this.stateTable);
+    pex.writeUInt16(states.length);
+    states.map((s) => s.writePex(pex));
+
+    let endOfObject = pex.data().length;
+    pex.data().writeUInt32LE(endOfObject - sizeIndex, sizeIndex);
+  }
+
+  getStrings() {
+    return [
+      this.name,
+      this.extends,
+      this.docString,
+      this.autoState,
+      ...this._getStringsFromTable(this.structTable),
+      ...this._getStringsFromTable(this.variableTable),
+      ...this._getStringsFromTable(this.propertyTable),
+      ...this._getStringsFromTable(this.stateTable)
+    ];
+  }
 }
