@@ -19,12 +19,12 @@ class PapyrusInstruction extends PapyrusBase {
     }
   }
 
-  static defineInstruction(opcode, name, args, varargs = false) {
+  static defineInstruction(opcode, name, arity, varargs = false) {
     if (!this.definitions) {
       this.definitions = {};
       this.prototype.definitions = this.definitions;
     }
-    this.definitions[opcode] = {opcode, name, args, varargs};
+    this.definitions[opcode] = {opcode, name, arity, varargs};
   }
 
   static defineInstructions(definitions) {
@@ -37,10 +37,10 @@ class PapyrusInstruction extends PapyrusBase {
     let instruction = new PapyrusInstruction();
 
     let op = pex.readUInt8();
-    let {name, args, varargs} = this.definitions[op];
+    let {name, arity, varargs} = this.definitions[op];
     instruction.op = name;
 
-    while (args--) {
+    while (arity--) {
       instruction.args.push(PapyrusValue.readPex(pex));
     }
 
