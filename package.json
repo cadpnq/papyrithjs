@@ -5,7 +5,7 @@
   "bin": "main.js",
   "scripts": {
     "build": "pkg .",
-    "test": "mocha -r chai/register-assert -R spec"
+    "test": "mocha -r chai/register-assert -R spec --recursive"
   },
   "repository": {
     "type": "git",

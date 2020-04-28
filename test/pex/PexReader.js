@@ -1,4 +1,4 @@
-const PexReader = require('./../src/pex/PexReader');
+const PexReader = require('./../../src/pex/PexReader');
 
 describe('PexReader', function() {
   describe('#readUInt8()', function() {

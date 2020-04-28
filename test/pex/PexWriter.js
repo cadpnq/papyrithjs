@@ -1,4 +1,4 @@
-const PexWriter = require('./../src/pex/PexWriter');
+const PexWriter = require('./../../src/pex/PexWriter');
 
 describe('PexWriter', function() {
   let pex;
