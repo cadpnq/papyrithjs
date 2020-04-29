@@ -86,12 +86,12 @@ module.exports = class PapyrusProperty extends PapyrusBase {
     pex.writeUInt32(this.userFlags);
 
     if (this.auto) {
-      pex.writeUInt8(4);
+      pex.writeUInt8(7);
       pex.writeTableString(this.autoVar);
     } else {
       let flags = 0;
-      if (this.Get) flags &= 1;
-      if (this.Set) flags &= 2;
+      if (this.Get) flags |= 1;
+      if (this.Set) flags |= 2;
       pex.writeUInt8(flags);
       if (this.Get) this.Get.writePex(pex);
       if (this.Set) this.Set.writePex(pex);
