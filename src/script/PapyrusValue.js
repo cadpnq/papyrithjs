@@ -1,7 +1,7 @@
 const PapyrusBase = require('./PapyrusBase');
 
 module.exports = class PapyrusValue extends PapyrusBase {
-  constructor(type = 'null', value) {
+  constructor(type = 'null', value = 'None') {
     super();
     this.type = type;
     this.value = value;
@@ -55,6 +55,7 @@ module.exports = class PapyrusValue extends PapyrusBase {
         pex.writeUInt8(5);
         pex.writeUInt8(this.value ? 1 : 0);
         break;
+      case 'null':
       default:
         pex.writeUInt8(0);
     }
