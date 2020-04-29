@@ -34,9 +34,7 @@ module.exports = class PapyrusFunction extends PapyrusBase {
 
   static readPex(pex, isNamed = true) {
     let func = new PapyrusFunction(isNamed);
-    if (isNamed) {
-      func.name = pex.readTableString();
-    }
+    if (isNamed) func.name = pex.readTableString();
     func.return = pex.readTableString();
     func.docString = pex.readTableString();
     func.userFlags = pex.readUInt32();
@@ -175,17 +173,20 @@ module.exports = class PapyrusFunction extends PapyrusBase {
     instructionIndex = 0;
     for (let instruction of this.code) {
       if (instruction.op == 'label') continue;
-      instructionIndex++;
-      if (instruction.op != 'jump' && instruction.op != 'jumpt' && instruction.op != 'jumpf') continue;
+      if (instruction.op != 'jump' && instruction.op != 'jumpt' && instruction.op != 'jumpf') {
+        instructionIndex++;
+        continue;
+      }
 
       if (instruction.op == 'jump') {
         instruction.targetOffset = labelTable[instruction.args[0]] - instructionIndex;
       } else {
         instruction.targetOffset = labelTable[instruction.args[1]] - instructionIndex;
       }
+      instructionIndex++;
     }
 
-    pex.writeUInt16(this.code.length);
+    pex.writeUInt16(this.code.filter((i) => i.op != 'label').length);
     this.code.map((i) => i.writePex(pex));
   }
 
@@ -194,6 +195,10 @@ module.exports = class PapyrusFunction extends PapyrusBase {
       this.isNamed ? this.name : '',
       this.return,
       this.docString,
+      ...Object.values(this.locals),
+      ...Object.keys(this.locals),
+      ...Object.values(this.params),
+      ...Object.keys(this.params),
       ...this._getStringsFromTable(this.code)
     ];
   }
