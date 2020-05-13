@@ -53,7 +53,7 @@ class PapyrusInstruction extends PapyrusBase {
 
   asPas() {
     if (this.op == 'label') {
-      return this.name;
+      return this.name + ':';
     } else {
       return `${this.op} ${this.args.join(' ')} ${this.line ? `;@line ${this.line}` : ''}`;
     }

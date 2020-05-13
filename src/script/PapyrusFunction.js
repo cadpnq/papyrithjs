@@ -110,7 +110,7 @@ module.exports = class PapyrusFunction extends PapyrusBase {
       let labelName = `label${labelNumber++}`;
       let label = new PapyrusInstruction();
       label.op = 'label';
-      label.name = `${labelName}:`;
+      label.name = labelName;
 
       let target;
       if (op == 'jump') {
@@ -166,7 +166,7 @@ module.exports = class PapyrusFunction extends PapyrusBase {
       if (instruction.op != 'label') {
         instructionIndex++;
       } else {
-        labelTable[instruction.name.slice(0, instruction.name.length - 1)] = instructionIndex;
+        labelTable[instruction.name] = instructionIndex;
       }
     }
 

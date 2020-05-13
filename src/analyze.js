@@ -30,7 +30,7 @@ function liveSet(id, code, index, visited = new Set()) {
 }
 
 function target(name, code) {
-  return code.findIndex((i) => i.op == 'label' && i.name == name + ':');
+  return code.findIndex((i) => i.op == 'label' && i.name == name);
 }
 
 function uses(id, instruction) {
