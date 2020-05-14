@@ -29,7 +29,7 @@ $ ./papyrith disassemble someScript.pex
 ```
 $ ./papyrith fix someScript.pex
 ```
-At the moment the only real use case is fixing scripts for decompilation Champollion will often fail on scripts compiled with Caprica. The main culprit here is how Caprica handles temporary variables. It aggressively reuses them and Champollion does not expect this. Undoing this optimization will, for the most part, enable Champollion to understand the script. This is not a panacea - there are still cases where this alone will not be sufficient. In the future papyrith may handle these edge cases as they come up.
+At the moment the only real use case is fixing scripts for decompilation. Champollion will often fail on scripts compiled with Caprica. The main culprit here is how Caprica handles temporary variables. It aggressively reuses them and Champollion does not expect this. Undoing this optimization will, for the most part, enable Champollion to understand the script. This is not a panacea - there are still cases where this alone will not be sufficient. In the future papyrith may handle these edge cases as they come up.
 
 Additionally, papyrith verifies that the timestamps in the script fit in 32 bits. If the upper bits of the timestamps are set Champollion will fail.
 
