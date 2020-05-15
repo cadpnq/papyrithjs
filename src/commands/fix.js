@@ -1,7 +1,7 @@
 const fs = require('fs');
-const {getAllBindings, intersects, siblings, rewriteBinding} = require('./../analyze');
 const PapyrusScript = require('./../script/PapyrusScript');
 const PapyrusValue = require('./../script/PapyrusValue');
+const deoptimize = require('./../pex/deoptimize');
 
 exports.command = 'fix <file>';
 exports.desc = 'fix a file for decompilation with Champollion';
@@ -41,38 +41,7 @@ exports.handler = (argv) => {
   }
 
   console.log('Deoptimizing temporary variables...');
-  for (let object of Object.values(script.objectTable)) {
-    for (let property of Object.values(object.propertyTable)) {
-      if (property.Get) deoptimizeTemporaries(property.Get);
-      if (property.Set) deoptimizeTemporaries(property.Set);
-    }
-    for (let state of Object.values(object.stateTable)) {
-      for (let func of Object.values(state.functions)) {
-        deoptimizeTemporaries(func);
-      }
-    }
-  }
+  deoptimize.rewrite(script);
 
   fs.writeFileSync(output, script.savePex().data());
-}
-
-function deoptimizeTemporaries(func) {
-  let bindings = getAllBindings(func.code).filter((b) => b.to.startsWith('::temp'));
-
-  for (let binding1 of bindings) {
-    for (let binding2 of bindings) {
-      if (binding1 == binding2 ||
-          binding1.to != binding2.to ||
-          intersects(binding1, binding2) ||
-          siblings(binding2, bindings).length > 0) continue;
-
-      let tempNumber = 0;
-      while(func.locals[`::temp${tempNumber}`]) tempNumber++;
-      let tempName = `::temp${tempNumber}`;
-      let newTemp = new PapyrusValue('id', tempName);
-      func.locals[tempName] = func.locals[binding1.instruction.dest.value];
-
-      rewriteBinding(binding2, newTemp);
-    }
-  }
 }
