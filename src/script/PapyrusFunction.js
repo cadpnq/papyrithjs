@@ -141,6 +141,46 @@ module.exports = class PapyrusFunction extends PapyrusBase {
     }
   }
 
+  genrateIdInfo(object) {
+    for (let instruction of this.code) {
+      for (let arg of instruction.args) {
+        if (arg.type != 'id') continue;
+        let name = arg.nvalue;
+        let local = Object.keys(this.locals).find((l) => l.toLowerCase() == name);
+        if (local) {
+          arg.idType = this.locals[local];
+          if (name.startsWith('::temp')) {
+            arg.scope = 'temp';
+          } else {
+            arg.scope = 'local';
+          }
+          continue;
+        }
+
+        let param = Object.keys(this.params).find((p) => p.toLowerCase() == name);
+        if (param) {
+          arg.idType = this.params[param];
+          arg.scope = 'parameter';
+          continue;
+        }
+
+        let variable = Object.keys(object.variableTable).find((v) => v.toLowerCase() == name);
+        if (variable) {
+          arg.idType = object.variableTable[variable].type.toLowerCase();
+          arg.scope = 'variable';
+          continue;
+        }
+
+        let property = Object.keys(object.propertyTable).find((p) => p.toLowerCase() == name);
+        if (property) {
+          arg.idType = object.propertyTable[property].type.toLowerCase();
+          arg.scope = 'property';
+          continue;
+        }
+      }
+    }
+  }
+
   writePex(pex) {
     if (this.isNamed) pex.writeTableString(this.name);
     pex.writeTableString(this.return);

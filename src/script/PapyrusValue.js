@@ -5,6 +5,8 @@ module.exports = class PapyrusValue extends PapyrusBase {
     super();
     this.type = type;
     this.value = value;
+    this.scope = '$unknown';
+    this.idType = '$unknown';
   }
 
   get nvalue() {

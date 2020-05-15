@@ -177,12 +177,19 @@ module.exports = class PapyrusScript extends PapyrusBase {
 
     for (let object of Object.values(script.objectTable)) {
       for (let property of Object.values(object.propertyTable)) {
-        if (property.Get) property.Get.generateLabels();
-        if (property.Set) property.Set.generateLabels();
+        if (property.Get) {
+          property.Get.generateLabels();
+          property.Get.genrateIdInfo(object);
+        }
+        if (property.Set) {
+          property.Set.generateLabels();
+          property.Set.genrateIdInfo(object);
+        }
       }
       for (let state of Object.values(object.stateTable)) {
         for (let func of Object.values(state.functions)) {
           func.generateLabels();
+          func.genrateIdInfo(object);
         }
       }
     }
@@ -256,6 +263,7 @@ module.exports = class PapyrusScript extends PapyrusBase {
 
   getStrings() {
     return [
+      '\n',
       ...Object.keys(this.userFlagsRef),
       ...this._getStringsFromTable(this.objectTable)
     ];
