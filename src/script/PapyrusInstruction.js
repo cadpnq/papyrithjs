@@ -31,6 +31,10 @@ class PapyrusInstruction extends PapyrusBase {
     return this.args[this.definition.names.indexOf('target')];
   }
 
+  set target(value) {
+    this.args[this.definition.names.indexOf('target')] = value;
+  }
+
   get dest() {
     return this.args[this.definition.names.indexOf('dest')];
   }
@@ -43,8 +47,16 @@ class PapyrusInstruction extends PapyrusBase {
     return this.args[this.definition.names.indexOf('arg1')];
   }
 
+  set arg1(value) {
+    this.args[this.definition.names.indexOf('arg1')] = value;
+  }
+
   get arg2() {
     return this.args[this.definition.names.indexOf('arg2')];
+  }
+
+  set arg2(value) {
+    this.args[this.definition.names.indexOf('arg2')] = value;
   }
 
   isLabel() {
