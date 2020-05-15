@@ -7,6 +7,14 @@ module.exports = class PapyrusValue extends PapyrusBase {
     this.value = value;
   }
 
+  get nvalue() {
+    if (this.type == 'id') {
+      return this.value.toLowerCase();
+    } else {
+      return this.value;
+    }
+  }
+
   toString() {
     if (this.type == 'string') {
       return JSON.stringify(this.value);
