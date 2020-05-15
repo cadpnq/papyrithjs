@@ -4,7 +4,7 @@ const optimize = require('./../pex/optimize');
 
 
 exports.command = 'optimize <file>';
-exports.desc = 'optimize an existing pex/pas file';
+exports.desc = 'optimize an existing pex file';
 exports.builder = (yargs) => {
   yargs.positional('file', {
     type: 'string',
