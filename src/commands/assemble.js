@@ -1,5 +1,6 @@
 exports.command = 'assemble <file>';
 exports.desc = 'assemble a pas file';
+exports.desc = false;
 exports.builder = (yargs) => {
   yargs.positional('file', {
     type: 'string',
