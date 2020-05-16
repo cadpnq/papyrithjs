@@ -1,5 +1,5 @@
 # papyrith.js
-Papyrus tooling written in JavaScript.
+Papyrus tooling for Fallout 4 written in JavaScript.
 
 
 ```
@@ -7,7 +7,6 @@ $ ./papyrith
 papyrith <command> [args]
 
 Commands:
-  papyrith assemble <file>     assemble a pas file
   papyrith disassemble <file>  disassemble a pex file
   papyrith fix <file>          fix a file for decompilation with Champollion
   papyrith optimize <file>     optimize an existing pex file
@@ -18,8 +17,6 @@ Options:
 ```
 
 # Commands
-### assemble
-Not currently implemented.
 
 ### disassemble
 ```
