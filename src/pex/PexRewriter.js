@@ -26,9 +26,10 @@ module.exports = class PexRewriter {
 
   _rewriteInstructions(func) {
     let anyChange = false;
-    let change = false;
+    let change = true;
 
-    do {
+    while (change) {
+      change = false;
       outer: for (let i = 0; i < func.code.length; i++) {
         let instruction = func.code[i];
         if (this.instructionRules.has(instruction.op)) {
@@ -39,17 +40,18 @@ module.exports = class PexRewriter {
           }
         }
       }
-    } while (change);
+    }
 
     return anyChange;
   }
 
   _rewriteBindings(func) {
     let anyChange = false;
-    let change = false;
+    let change = true;
     let bindings = Binding.allBindings(func.code);
 
-    do {
+    while (change) {
+      change = false;
       outer: for (let binding of bindings) {
         for (let rule of this.bindingRules) {
           change = rule(func, binding);
@@ -58,7 +60,7 @@ module.exports = class PexRewriter {
           if (change) break outer;
         }
       }
-    } while (change);
+    }
 
     return anyChange;
   }
