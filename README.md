@@ -10,6 +10,7 @@ Commands:
   papyrith assemble <file>     assemble a pas file
   papyrith disassemble <file>  disassemble a pex file
   papyrith fix <file>          fix a file for decompilation with Champollion
+  papyrith optimize <file>     optimize an existing pex file
 
 Options:
   --version  Show version number                                       [boolean]
@@ -34,6 +35,12 @@ At the moment the only real use case is fixing scripts for decompilation. Champo
 Additionally, papyrith verifies that the timestamps in the script fit in 32 bits. If the upper bits of the timestamps are set Champollion will fail.
 
 It is not recommended that you load "fixed" scripts into your game. The deoptimization process will (potentially) introduce *many* additional temporary variables. The script will still function the same, but it's... gross.
+
+### optimize
+```
+$ ./papyrith optimize someScript.pex
+```
+*highly experimental functionality -- not yet recommended for general use*
 
 # Building
 Clone the repo, run `npm install` followed by `npm run build`
