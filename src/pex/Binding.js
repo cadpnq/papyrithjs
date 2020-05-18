@@ -14,6 +14,7 @@ module.exports = class Binding {
     this.to = this.instruction.dest.nvalue;
     this.uses = this._getUses(code, index + 1);
     this.bindings = bindings;
+    this.index = index;
     this.valid = true;
   }
 

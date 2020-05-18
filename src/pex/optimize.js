@@ -208,3 +208,19 @@ rewriter.addBindingRule([], ['temp'], (func, binding) => {
   next.dest = nonevar;
   return true;
 });
+
+// Any assign to a temporary that is only used in the next instruction can be removed and the next instruction rewritten to use the source of the assign.
+rewriter.addBindingRule(['assign'], ['temp'], (func, binding) => {
+  if (binding.uses.length != 1) return;
+  let next = binding.uses[0];
+  next.args = next.args.map((a) => {
+    if (a.type == 'id' && a.nvalue == binding.to) {
+      return binding.instruction.arg1;
+    } else {
+      return a;
+    }
+  });
+  killInstruction(func, binding.index);
+  binding.valid = false;
+  return true;
+});
