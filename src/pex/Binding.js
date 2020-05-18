@@ -59,7 +59,7 @@ module.exports = class Binding {
   }
 
   intersects(binding) {
-   return new Set([...this.uses, ...binding.uses]).size != this.uses.length + binding.uses.length;
+    return new Set([...this.uses, ...binding.uses]).size != this.uses.length + binding.uses.length;
   }
 
   siblings() {
