@@ -146,11 +146,13 @@ rewriter.addInstructionRule(['cast'], (func, index) => {
   }
 });
 
-// Any instruction that stores a value that is not used can be rewritten to store to nonevar.
+// Any instruction except function calls that store a value that is not used can be removed.
 rewriter.addBindingRule([], ['temp', 'local', 'parameter'], (func, binding) => {
-  if (binding.uses.length > 0 || binding.instruction.dest.nvalue == '::nonevar') return;
-  let nonevar = getNonevar(func);
-  binding.instruction.dest = nonevar;
+  if (binding.uses.length > 0 ||
+      binding.instruction.dest.nvalue == '::nonevar' ||
+      ['callmethod', 'callparent', 'callstatic'].includes(binding.instruction.op)) return;
+  killInstruction(func, binding.index);
+  binding.valid = false;
   return true;
 });
 
