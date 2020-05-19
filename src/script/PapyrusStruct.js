@@ -6,6 +6,7 @@ module.exports = class PapyrusStruct extends PapyrusBase {
     super();
     this.name = '';
     this.members = {};
+    this.memberOrder = [];
   }
 
   asPas() {

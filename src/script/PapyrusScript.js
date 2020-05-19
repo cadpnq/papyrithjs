@@ -18,6 +18,7 @@ module.exports = class PapyrusScript extends PapyrusBase {
     };
     this.userFlagsRef = {};
     this.objectTable = {};
+    this.hasDebug = false;
   }
 
   asPas() {
@@ -76,6 +77,7 @@ module.exports = class PapyrusScript extends PapyrusBase {
     let groupInfo = [];
     let structInfo = [];
     let hasDebug = pex.readUInt8();
+    script.hasDebug = hasDebug;
     if (hasDebug) {
       script.info.modifyTime = pex.readUInt64();
 
@@ -122,6 +124,7 @@ module.exports = class PapyrusScript extends PapyrusBase {
         for (let i = 0; i < info.count; i++) {
           info.names.push(pex.readTableString());
         }
+        structInfo.push(info);
       }
     }
 
@@ -172,6 +175,12 @@ module.exports = class PapyrusScript extends PapyrusBase {
         propertyGroup.userFlags = userFlags;
         propertyGroup.properties = properties;
         script.objectTable[objectName].propertyGroupTable[groupName] = propertyGroup;
+      }
+
+      for (let {objectName, structName, names} of structInfo) {
+        if (!script.objectTable[objectName] ||
+            !script.objectTable[objectName].structTable[structName]) continue;
+        script.objectTable[objectName].structTable[structName].memberOrder = names;
       }
     }
 
@@ -243,8 +252,109 @@ module.exports = class PapyrusScript extends PapyrusBase {
       pex.writeString(strings[i]);
     }
 
-    // TODO: write debug info here
-    pex.writeUInt8(0);
+    if (this.hasDebug) {
+      let functionInfo = [];
+      let groupInfo = [];
+      let structInfo = [];
+
+      let lineNumbers = (func) => func.code.filter((i) => i.op != 'label').map((i) => i.line);
+
+      for (let object of Object.values(this.objectTable)) {
+        for (let property of Object.values(object.propertyTable)) {
+          if (property.Get) {
+            let numbers = lineNumbers(property.Get);
+            functionInfo.push({
+              objectName: object.name,
+              stateName: '',
+              functionName: property.name,
+              functionType: 1,
+              instructionCount: numbers.length,
+              lineNumbers: numbers
+            });
+          }
+
+          if (property.Set) {
+            let numbers = lineNumbers(property.Set);
+            functionInfo.push({
+              objectName: object.name,
+              stateName: '',
+              functionName: property.name,
+              functionType: 2,
+              instructionCount: numbers.length,
+              lineNumbers: numbers
+            });
+          }
+        }
+
+        for (let state of Object.values(object.stateTable)) {
+          for (let func of Object.values(state.functions)) {
+            let numbers = lineNumbers(func);
+            functionInfo.push({
+              objectName: object.name,
+              stateName: state.name,
+              functionName: func.name,
+              functionType: 0,
+              instructionCount: numbers.length,
+              lineNumbers: numbers
+            });
+          }
+        }
+
+        for (let group of Object.values(object.propertyGroupTable)) {
+          groupInfo.push({
+            objectName: object.name,
+            groupName: group.name,
+            docString: group.docString,
+            userFlags: group.userFlags,
+            propertyCount: group.properties.length,
+            properties: group.properties
+          });
+        }
+
+        for (let struct of Object.values(object.structTable)) {
+          if (!struct.memberOrder.length) continue;
+          structInfo.push({
+            objectName: object.name,
+            structName: struct.name,
+            count: struct.memberOrder.length,
+            names: struct.memberOrder
+          });
+        }
+      }
+
+      pex.writeUInt8(1);
+      pex.writeUInt64(this.info.modifyTime);
+
+      pex.writeUInt16(functionInfo.length);
+      for (let info of functionInfo) {
+        pex.writeTableString(info.objectName);
+        pex.writeTableString(info.stateName);
+        pex.writeTableString(info.functionName);
+        pex.writeUInt8(info.functionType);
+        pex.writeUInt16(info.instructionCount);
+        info.lineNumbers.map((i) => pex.writeUInt16(i));
+      }
+
+      pex.writeUInt16(groupInfo.length);
+      for (let info of groupInfo) {
+        pex.writeTableString(info.objectName);
+        pex.writeTableString(info.groupName);
+        pex.writeTableString(info.docString);
+        pex.writeUInt32(info.userFlags);
+        pex.writeUInt16(info.propertyCount);
+        info.properties.map((p) => pex.writeTableString(p));
+      }
+
+      pex.writeUInt16(structInfo.length);
+      for (let info of structInfo) {
+        pex.writeTableString(info.objectName);
+        pex.writeTableString(info.structName);
+        pex.writeUInt16(info.count);
+        info.names.map((n) => pex.writeTableString(n));
+      }
+    } else {
+      pex.writeUInt8(0);
+    }
 
     pex.writeUInt16(Object.values(this.userFlagsRef).length);
     for (let [flag, index] of Object.entries(this.userFlagsRef)) {
