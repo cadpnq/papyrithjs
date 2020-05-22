@@ -191,7 +191,6 @@ rewriter.addBindingRule(['not'], ['temp'], (func, binding) => {
     }
     binding.instruction.dest = nonevar;
     binding.uses = [];
-    binding.to = nonevar;
     return true;
   }
 });
@@ -204,7 +203,6 @@ rewriter.addBindingRule([], ['temp'], (func, binding) => {
       next.arg1 != binding.to) return;
   let nonevar = getNonevar(func);
   binding.instruction.dest = next.dest;
-  binding.valid = false;
   next.dest = nonevar;
   return true;
 });
@@ -221,6 +219,5 @@ rewriter.addBindingRule(['assign'], ['temp'], (func, binding) => {
     }
   });
   killInstruction(func, binding.index);
-  binding.valid = false;
   return true;
 });

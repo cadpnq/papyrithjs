@@ -48,15 +48,13 @@ module.exports = class PexRewriter {
   _rewriteBindings(func) {
     let anyChange = false;
     let change = true;
-    let bindings = Binding.allBindings(func.code);
 
     while (change) {
       change = false;
-      outer: for (let binding of bindings) {
+      outer: for (let binding of Binding.allBindings(func.code)) {
         for (let rule of this.bindingRules) {
           change = rule(func, binding);
           anyChange = anyChange || change;
-          if (!binding.valid) bindings = Binding.allBindings(func.code);
           if (change) break outer;
         }
       }

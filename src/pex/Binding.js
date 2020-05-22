@@ -15,7 +15,6 @@ module.exports = class Binding {
     this.uses = this._getUses(code, index + 1);
     this.bindings = bindings;
     this.index = index;
-    this.valid = true;
   }
 
   _getUses(code, index, visited = new Set()) {
