@@ -177,20 +177,18 @@ rewriter.addBindingRule([], ['temp'], (func, binding) => {
   }
 });
 
-// When a value is not'ed and only used in a branch the not can be rewritten to store to nonevar and the branch condition can be flipped.
+// When a value is not'ed and only used in a branch the not can be removed and the branch can be rewritten to use the opposite condition.
 rewriter.addBindingRule(['not'], ['temp'], (func, binding) => {
   if (binding.uses.length != 1) return;
   let next = binding.uses[0];
   if (next.op == 'jumpf' || next.op == 'jumpt') {
-    let nonevar = getNonevar(func);
     next.arg1 = binding.instruction.arg1;
     if (next.op == 'jumpf') {
       next.op = 'jumpt';
     } else if (next.op == 'jumpt') {
       next.op = 'jumpf';
     }
-    binding.instruction.dest = nonevar;
-    binding.uses = [];
+    killInstruction(func, binding.index);
     return true;
   }
 });
