@@ -62,11 +62,11 @@ module.exports = class Binding {
   }
 
   siblings() {
-    return this.bindings.filter((b) => {
+    return this.bindings.filter((b) =>
       this != b &&
       this.to == b.to &&
       this.intersects(b)
-    });
+    );
   }
 
   rewrite(id) {
