@@ -7,6 +7,7 @@ rewriter.addBindingRule([], ['temp'], (func, binding) => {
   for (let binding2 of binding.bindings) {
     if (binding == binding2 ||
         binding.to != binding2.to ||
+        binding2.instruction.dest.scope != 'temp' ||
         binding.intersects(binding2) ||
         binding2.siblings().length > 0) continue;
 
