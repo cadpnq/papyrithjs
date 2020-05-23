@@ -162,7 +162,7 @@ module.exports = class PapyrusScript extends PapyrusBase {
 
         if (func) {
           for (let i = 0; i < instructionCount; i++) {
-            func.code[i].line = lineNumbers[i];
+            if (func.code[i]) func.code[i].line = lineNumbers[i];
           }
         }
       }
