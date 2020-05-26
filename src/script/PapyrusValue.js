@@ -18,10 +18,17 @@ module.exports = class PapyrusValue extends PapyrusBase {
   }
 
   toString() {
-    if (this.type == 'string') {
-      return JSON.stringify(this.value);
-    } else {
-      return this.value;
+    switch (this.type) {
+      case 'string':
+        return JSON.stringify(this.value);
+      case 'float':
+        if (Number.isInteger(this.value)) {
+          return this.value.toFixed(1);
+        } else {
+          return this.value;
+        }
+      default:
+        return this.value;
     }
   }
 
