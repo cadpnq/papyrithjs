@@ -18,7 +18,7 @@ module.exports = class PapyrusVariable extends PapyrusBase {
     return `.variable ${this.name} ${this.type}${this.const ? ' const' : ''}\n` +
            `  .userFlags ${this.userFlags}\n` +
            `  .initialValue ${this.initialValue} ` +
-           `${this.docString ? `\n  .docString ${JSON.stringify(this.docString)}` : ''}\n` +
+           `${this.inStruct ? `\n  .docString ${JSON.stringify(this.docString)}` : ''}\n` +
            `.endVariable`;
   }
 
