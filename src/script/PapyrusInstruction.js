@@ -178,7 +178,7 @@ PapyrusInstruction.defineInstructions([
   ['comparelt', 3, ['dest', 'arg1', 'arg2']],
   ['comparele', 3, ['dest', 'arg1', 'arg2']],
   ['comparegt', 3, ['dest', 'arg1', 'arg2']],
-  ['comparege', 3, ['dest', 'arg1', 'arg2']],
+  ['comparegte', 3, ['dest', 'arg1', 'arg2']],
   ['jump', 1, ['target']],
   ['jumpt', 2, ['arg1', 'target']],
   ['jumpf', 2, ['arg1', 'target']],
@@ -201,10 +201,10 @@ PapyrusInstruction.defineInstructions([
   ['structset', 3],
   ['arrayfindstruct', 5, ['arg1', 'dest']],
   ['arrayrfindstruct', 5, ['arg1', 'dest']],
-  ['arrayadd', 3],
-  ['arrayinsert', 3],
+  ['arrayaddelements', 3],
+  ['arrayinsertelement', 3],
   ['arrayremovelast', 1],
-  ['arrayremove', 3],
+  ['arrayremoveelements', 3],
   ['arrayclear', 1]
 ]);
 
