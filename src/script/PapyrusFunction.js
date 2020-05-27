@@ -184,9 +184,7 @@ module.exports = class PapyrusFunction extends PapyrusBase {
   pruneLocals() {
     local: for (let local in this.locals) {
       for (let instruction of this.code) {
-        for (let arg of instruction.args) {
-          if (arg.type == 'id' && arg.nvalue == local.toLowerCase()) continue local;
-        }
+        if (instruction.dest && instruction.dest.nvalue == local.toLowerCase()) continue local;
       }
       delete this.locals[local];
     }
