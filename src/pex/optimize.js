@@ -156,7 +156,7 @@ rewriter.addBindingRule([], ['temp', 'local', 'parameter'], (func, binding) => {
   return true;
 });
 
-// Two groups of temporaries can be combined if they are of the same type and none of them intersect with each other.
+// Two groups of temporaries can be combined if they are of the same type and none of them interfere with each other.
 rewriter.addBindingRule([], ['temp'], (func, binding) => {
   let these = [binding].concat(binding.siblings());
   for (let binding2 of binding.bindings) {
@@ -167,7 +167,13 @@ rewriter.addBindingRule([], ['temp'], (func, binding) => {
     let valid = true;
     for (let x of these) {
       for (let y of those) {
-        if (x.intersects(y) || x == y) valid = false;
+        if (x.intersects(y)) {
+          valid = false;
+          if (!x.usesId(y.to) &&
+              x.ends.every((i) => i.dest && i.dest.nvalue == y.to)) {
+            valid = true;
+          }
+        }
       }
     }
     if (valid) {
