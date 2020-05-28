@@ -152,6 +152,7 @@ module.exports = class PapyrusObject extends PapyrusBase {
       ...this._getStringsFromTable(this.structTable),
       ...this._getStringsFromTable(this.variableTable),
       ...this._getStringsFromTable(this.propertyTable),
+      ...this._getStringsFromTable(this.propertyGroupTable),
       ...this._getStringsFromTable(this.stateTable)
     ];
   }

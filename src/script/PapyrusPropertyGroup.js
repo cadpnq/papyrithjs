@@ -39,4 +39,8 @@ module.exports = class PapyrusPropertyGroup extends PapyrusBase {
 
     return group;
   }
+
+  getStrings() {
+    return [this.name];
+  }
 }
