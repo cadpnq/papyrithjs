@@ -68,7 +68,8 @@ module.exports = class PapyrusVariable extends PapyrusBase {
     return [
       this.name,
       this.type,
-      this.docString
+      this.docString,
+      ...(this.initialValue.type == 'string' ? this.initialValue.getStrings() : [])
     ];
   }
 }
