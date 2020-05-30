@@ -176,7 +176,7 @@ PapyrusInstruction.defineInstructions([
   ['cast', 2, ['dest', 'arg1']],
   ['compareeq', 3, ['dest', 'arg1', 'arg2']],
   ['comparelt', 3, ['dest', 'arg1', 'arg2']],
-  ['comparele', 3, ['dest', 'arg1', 'arg2']],
+  ['comparelte', 3, ['dest', 'arg1', 'arg2']],
   ['comparegt', 3, ['dest', 'arg1', 'arg2']],
   ['comparegte', 3, ['dest', 'arg1', 'arg2']],
   ['jump', 1, ['target']],
