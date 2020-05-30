@@ -152,7 +152,6 @@ rewriter.addBindingRule([], ['temp', 'local', 'parameter'], (func, binding) => {
       binding.instruction.dest.nvalue == '::nonevar' ||
       ['callmethod', 'callparent', 'callstatic'].includes(binding.instruction.op)) return;
   killInstruction(func, binding.index);
-  binding.valid = false;
   return true;
 });
 
