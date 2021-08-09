@@ -23,26 +23,28 @@ module.exports = class PapyrusObject extends PapyrusBase {
   }
 
   asPas() {
-    return `.object ${this.name}${this.extends ? ' ' + this.extends : ''}\n` +
-           `  .userFlags ${this.userFlags}\n` +
-           `  .docString ${JSON.stringify(this.docString)}\n` +
-           `  .autoState ${this.autoState}\n` +
-           `  .structTable\n` +
-           `${this._printTable(this.structTable, 4)}\n` +
-           `  .endStructTable\n` +
-           `  .variableTable\n` +
-           `${this._printTable(this.variableTable, 4)}\n` +
-           `  .endVariableTable\n` +
-           `  .propertyTable\n` +
-           `${this._printTable(this.propertyTable, 4)}\n` +
-           `  .endPropertyTable\n` +
-           `  .propertyGroupTable\n` +
-           `${this._printTable(this.propertyGroupTable, 4)}\n` +
-           `  .endPropertyGroupTable\n` +
-           `  .stateTable\n` +
-           `${this._printTable(this.stateTable, 4)}\n` +
-           `  .endStateTable\n` +
-           `.endObject`;
+    return (
+      `.object ${this.name}${this.extends ? ' ' + this.extends : ''}\n` +
+      `  .userFlags ${this.userFlags}\n` +
+      `  .docString ${JSON.stringify(this.docString)}\n` +
+      `  .autoState ${this.autoState}\n` +
+      `  .structTable\n` +
+      `${this._printTable(this.structTable, 4)}\n` +
+      `  .endStructTable\n` +
+      `  .variableTable\n` +
+      `${this._printTable(this.variableTable, 4)}\n` +
+      `  .endVariableTable\n` +
+      `  .propertyTable\n` +
+      `${this._printTable(this.propertyTable, 4)}\n` +
+      `  .endPropertyTable\n` +
+      `  .propertyGroupTable\n` +
+      `${this._printTable(this.propertyGroupTable, 4)}\n` +
+      `  .endPropertyGroupTable\n` +
+      `  .stateTable\n` +
+      `${this._printTable(this.stateTable, 4)}\n` +
+      `  .endStateTable\n` +
+      `.endObject`
+    );
   }
 
   static readPex(pex) {
@@ -103,7 +105,10 @@ module.exports = class PapyrusObject extends PapyrusBase {
     object.structTable = tokens.readTable('struct', PapyrusStruct);
     object.variableTable = tokens.readTable('variable', PapyrusVariable);
     object.propertyTable = tokens.readTable('property', PapyrusProperty);
-    object.propertyGroupTable = tokens.readTable('propertyGroup', PapyrusPropertyGroup);
+    object.propertyGroupTable = tokens.readTable(
+      'propertyGroup',
+      PapyrusPropertyGroup
+    );
     object.stateTable = tokens.readTable('state', PapyrusState);
 
     tokens.expect('.endObject');
@@ -114,7 +119,7 @@ module.exports = class PapyrusObject extends PapyrusBase {
   writePex(pex) {
     pex.writeTableString(this.name);
 
-    let sizeIndex = pex.data().length
+    let sizeIndex = pex.data().length;
     pex.writeUInt32(0);
 
     pex.writeTableString(this.extends);
@@ -156,4 +161,4 @@ module.exports = class PapyrusObject extends PapyrusBase {
       ...this._getStringsFromTable(this.stateTable)
     ];
   }
-}
+};

@@ -22,19 +22,21 @@ module.exports = class PapyrusScript extends PapyrusBase {
   }
 
   asPas() {
-    return `.info\n` +
-           `  .source ${JSON.stringify(this.info.source)}\n` +
-           `  .modifyTime ${this.info.modifyTime}\n` +
-           `  .compileTime ${this.info.compileTime}\n` +
-           `  .user ${JSON.stringify(this.info.user)}\n` +
-           `  .computer ${JSON.stringify(this.info.computer)}\n` +
-           `.endInfo\n` +
-           `.userFlagsRef\n` +
-           `${this._printSimpleTable(this.userFlagsRef, '.flag', 2)}\n` +
-           `.endUserFlagsRef\n` +
-           `.objectTable\n` +
-           `${this._printTable(this.objectTable)}\n` +
-           `.endObjectTable`;
+    return (
+      `.info\n` +
+      `  .source ${JSON.stringify(this.info.source)}\n` +
+      `  .modifyTime ${this.info.modifyTime}\n` +
+      `  .compileTime ${this.info.compileTime}\n` +
+      `  .user ${JSON.stringify(this.info.user)}\n` +
+      `  .computer ${JSON.stringify(this.info.computer)}\n` +
+      `.endInfo\n` +
+      `.userFlagsRef\n` +
+      `${this._printSimpleTable(this.userFlagsRef, '.flag', 2)}\n` +
+      `.endUserFlagsRef\n` +
+      `.objectTable\n` +
+      `${this._printTable(this.objectTable)}\n` +
+      `.endObjectTable`
+    );
   }
 
   static load(filename) {
@@ -44,7 +46,7 @@ module.exports = class PapyrusScript extends PapyrusBase {
     } else if (filename.endsWith('.pas')) {
       return this.loadPas(buffer);
     } else {
-      throw `no`
+      throw `no`;
     }
   }
 
@@ -52,7 +54,7 @@ module.exports = class PapyrusScript extends PapyrusBase {
     let script = new PapyrusScript();
     let pex = new PexReader(buffer);
 
-    if (pex.readUInt32() != 0xFA57C0DE) {
+    if (pex.readUInt32() != 0xfa57c0de) {
       // this isn't a valid script file
       return script;
     }
@@ -142,17 +144,37 @@ module.exports = class PapyrusScript extends PapyrusBase {
     }
 
     if (hasDebug) {
-      for (let {objectName, stateName, functionName, functionType, instructionCount, lineNumbers} of functionInfo) {
-
+      for (let {
+        objectName,
+        stateName,
+        functionName,
+        functionType,
+        instructionCount,
+        lineNumbers
+      } of functionInfo) {
         // optional chaining when?
         let func;
         if (functionType == 0) {
-          if (!script.objectTable[objectName] || !script.objectTable[objectName].stateTable[stateName] || !script.objectTable[objectName].stateTable[stateName].functions[functionName]) continue;
-          func = script.objectTable[objectName].stateTable[stateName].functions[functionName];
+          if (
+            !script.objectTable[objectName] ||
+            !script.objectTable[objectName].stateTable[stateName] ||
+            !script.objectTable[objectName].stateTable[stateName].functions[
+              functionName
+            ]
+          )
+            continue;
+          func =
+            script.objectTable[objectName].stateTable[stateName].functions[
+              functionName
+            ];
         } else if (functionType == 1 || functionType == 2) {
-          if (!script.objectTable[objectName] ||
-              !script.objectTable[objectName].propertyTable[functionName]) continue;
-          let property = script.objectTable[objectName].propertyTable[functionName];
+          if (
+            !script.objectTable[objectName] ||
+            !script.objectTable[objectName].propertyTable[functionName]
+          )
+            continue;
+          let property =
+            script.objectTable[objectName].propertyTable[functionName];
           if (functionType == 1) {
             func = property.Get;
           } else if (functionType == 2) {
@@ -167,20 +189,31 @@ module.exports = class PapyrusScript extends PapyrusBase {
         }
       }
 
-      for (let {objectName, groupName, docString, userFlags, properties} of groupInfo) {
+      for (let {
+        objectName,
+        groupName,
+        docString,
+        userFlags,
+        properties
+      } of groupInfo) {
         if (!script.objectTable[objectName]) continue;
         let propertyGroup = new PapyrusPropertyGroup();
         propertyGroup.name = groupName;
         propertyGroup.docString = docString;
         propertyGroup.userFlags = userFlags;
         propertyGroup.properties = properties;
-        script.objectTable[objectName].propertyGroupTable[groupName] = propertyGroup;
+        script.objectTable[objectName].propertyGroupTable[groupName] =
+          propertyGroup;
       }
 
-      for (let {objectName, structName, names} of structInfo) {
-        if (!script.objectTable[objectName] ||
-            !script.objectTable[objectName].structTable[structName]) continue;
-        script.objectTable[objectName].structTable[structName].memberOrder = names;
+      for (let { objectName, structName, names } of structInfo) {
+        if (
+          !script.objectTable[objectName] ||
+          !script.objectTable[objectName].structTable[structName]
+        )
+          continue;
+        script.objectTable[objectName].structTable[structName].memberOrder =
+          names;
       }
     }
 
@@ -234,7 +267,7 @@ module.exports = class PapyrusScript extends PapyrusBase {
     let pex = new PexWriter();
 
     // magic, major, minor, and gameid
-    pex.writeUInt32(0xFA57C0DE);
+    pex.writeUInt32(0xfa57c0de);
     pex.writeUInt8(3);
     pex.writeUInt8(9);
     pex.writeUInt16(2);
@@ -257,7 +290,8 @@ module.exports = class PapyrusScript extends PapyrusBase {
       let groupInfo = [];
       let structInfo = [];
 
-      let lineNumbers = (func) => func.code.filter((i) => i.op != 'label').map((i) => i.line);
+      let lineNumbers = (func) =>
+        func.code.filter((i) => i.op != 'label').map((i) => i.line);
 
       for (let object of Object.values(this.objectTable)) {
         for (let property of Object.values(object.propertyTable)) {
@@ -378,4 +412,4 @@ module.exports = class PapyrusScript extends PapyrusBase {
       ...this._getStringsFromTable(this.objectTable)
     ];
   }
-}
+};

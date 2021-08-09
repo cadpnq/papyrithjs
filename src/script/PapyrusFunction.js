@@ -16,20 +16,26 @@ module.exports = class PapyrusFunction extends PapyrusBase {
   }
 
   asPas() {
-    return `.function ${this.name}\n` +
-           `  .userFlags ${this.userFlags}\n` +
-           `  .docString ${JSON.stringify(this.docString)}\n` +
-           `  .return ${this.return}\n` +
-           `  .paramTable\n` +
-           (Object.keys(this.params).length ? `${this._printSimpleTable(this.params, '.param', 4)}\n` : '') +
-           `  .endParamTable\n` +
-           `  .localTable\n` +
-           (Object.keys(this.locals).length ? `${this._printSimpleTable(this.locals, '.local', 4)}\n` : '') +
-           `  .endLocalTable\n` +
-           `  .code\n` +
-           (this.code.length ? `${this._printTable(this.code, 4)}\n` : '') +
-           `  .endCode\n` +
-           `.endFunction`;
+    return (
+      `.function ${this.name}\n` +
+      `  .userFlags ${this.userFlags}\n` +
+      `  .docString ${JSON.stringify(this.docString)}\n` +
+      `  .return ${this.return}\n` +
+      `  .paramTable\n` +
+      (Object.keys(this.params).length
+        ? `${this._printSimpleTable(this.params, '.param', 4)}\n`
+        : '') +
+      `  .endParamTable\n` +
+      `  .localTable\n` +
+      (Object.keys(this.locals).length
+        ? `${this._printSimpleTable(this.locals, '.local', 4)}\n`
+        : '') +
+      `  .endLocalTable\n` +
+      `  .code\n` +
+      (this.code.length ? `${this._printTable(this.code, 4)}\n` : '') +
+      `  .endCode\n` +
+      `.endFunction`
+    );
   }
 
   static readPex(pex, isNamed = true) {
@@ -104,7 +110,7 @@ module.exports = class PapyrusFunction extends PapyrusBase {
     let labelNumber = 0;
     let maxIndex = this.code.length - 1;
     for (let i = 0; i < this.code.length; i++) {
-      let {op, args, index} = this.code[i];
+      let { op, args, index } = this.code[i];
       if (op != 'jump' && op != 'jumpt' && op != 'jumpf') continue;
 
       let labelName = `label${labelNumber++}`;
@@ -146,7 +152,9 @@ module.exports = class PapyrusFunction extends PapyrusBase {
       for (let arg of instruction.args) {
         if (arg.type != 'id') continue;
         let name = arg.nvalue;
-        let local = Object.keys(this.locals).find((l) => l.toLowerCase() == name);
+        let local = Object.keys(this.locals).find(
+          (l) => l.toLowerCase() == name
+        );
         if (local) {
           arg.idType = this.locals[local];
           if (name.startsWith('::temp')) {
@@ -157,21 +165,27 @@ module.exports = class PapyrusFunction extends PapyrusBase {
           continue;
         }
 
-        let param = Object.keys(this.params).find((p) => p.toLowerCase() == name);
+        let param = Object.keys(this.params).find(
+          (p) => p.toLowerCase() == name
+        );
         if (param) {
           arg.idType = this.params[param];
           arg.scope = 'parameter';
           continue;
         }
 
-        let variable = Object.keys(object.variableTable).find((v) => v.toLowerCase() == name);
+        let variable = Object.keys(object.variableTable).find(
+          (v) => v.toLowerCase() == name
+        );
         if (variable) {
           arg.idType = object.variableTable[variable].type.toLowerCase();
           arg.scope = 'variable';
           continue;
         }
 
-        let property = Object.keys(object.propertyTable).find((p) => p.toLowerCase() == name);
+        let property = Object.keys(object.propertyTable).find(
+          (p) => p.toLowerCase() == name
+        );
         if (property) {
           arg.idType = object.propertyTable[property].type.toLowerCase();
           arg.scope = 'property';
@@ -184,7 +198,8 @@ module.exports = class PapyrusFunction extends PapyrusBase {
   pruneLocals() {
     local: for (let local in this.locals) {
       for (let instruction of this.code) {
-        if (instruction.dest && instruction.dest.nvalue == local.toLowerCase()) continue local;
+        if (instruction.dest && instruction.dest.nvalue == local.toLowerCase())
+          continue local;
       }
       delete this.locals[local];
     }
@@ -222,15 +237,21 @@ module.exports = class PapyrusFunction extends PapyrusBase {
     instructionIndex = 0;
     for (let instruction of this.code) {
       if (instruction.op == 'label') continue;
-      if (instruction.op != 'jump' && instruction.op != 'jumpt' && instruction.op != 'jumpf') {
+      if (
+        instruction.op != 'jump' &&
+        instruction.op != 'jumpt' &&
+        instruction.op != 'jumpf'
+      ) {
         instructionIndex++;
         continue;
       }
 
       if (instruction.op == 'jump') {
-        instruction.targetOffset = labelTable[instruction.args[0]] - instructionIndex;
+        instruction.targetOffset =
+          labelTable[instruction.args[0]] - instructionIndex;
       } else {
-        instruction.targetOffset = labelTable[instruction.args[1]] - instructionIndex;
+        instruction.targetOffset =
+          labelTable[instruction.args[1]] - instructionIndex;
       }
       instructionIndex++;
     }
@@ -251,4 +272,4 @@ module.exports = class PapyrusFunction extends PapyrusBase {
       ...this._getStringsFromTable(this.code)
     ];
   }
-}
+};

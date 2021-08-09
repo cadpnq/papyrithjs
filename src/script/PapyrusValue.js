@@ -85,4 +85,4 @@ module.exports = class PapyrusValue extends PapyrusBase {
       return [];
     }
   }
-}
+};

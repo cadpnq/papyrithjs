@@ -7,5 +7,4 @@ exports.builder = (yargs) => {
     describe: 'the file to assemble'
   });
 };
-exports.handler = (argv) => {
-}
+exports.handler = (argv) => {};

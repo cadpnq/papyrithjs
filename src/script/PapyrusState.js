@@ -1,7 +1,7 @@
 const PapyrusBase = require('./PapyrusBase');
 const PapyrusFunction = require('./PapyrusFunction');
 
-module.exports = class PapyrusState extends PapyrusBase{
+module.exports = class PapyrusState extends PapyrusBase {
   constructor() {
     super();
     this.name = '';
@@ -9,9 +9,11 @@ module.exports = class PapyrusState extends PapyrusBase{
   }
 
   asPas() {
-    return `.state ${this.name}\n` +
-           `${this._printTable(this.functions, 2)}\n` +
-           `.endState`;
+    return (
+      `.state ${this.name}\n` +
+      `${this._printTable(this.functions, 2)}\n` +
+      `.endState`
+    );
   }
 
   static readPex(pex) {
@@ -57,9 +59,6 @@ module.exports = class PapyrusState extends PapyrusBase{
   }
 
   getStrings() {
-    return [
-      this.name,
-      ...this._getStringsFromTable(this.functions)
-    ];
+    return [this.name, ...this._getStringsFromTable(this.functions)];
   }
-}
+};

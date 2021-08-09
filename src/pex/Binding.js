@@ -5,7 +5,9 @@ function target(name, code) {
 }
 
 function usesId(id, instruction) {
-  return instruction.args.some((a) => instruction.dest != a && a.type == 'id' && a.nvalue == id);
+  return instruction.args.some(
+    (a) => instruction.dest != a && a.type == 'id' && a.nvalue == id
+  );
 }
 
 module.exports = class Binding {
@@ -23,9 +25,10 @@ module.exports = class Binding {
   _getEnds(code) {
     for (let use of this.uses) {
       let nextInstruction = code[code.indexOf(use) + 1];
-      if (use.op != 'jump' &&
-          (!this.uses.includes(nextInstruction) ||
-           use == this.instruction)) {
+      if (
+        use.op != 'jump' &&
+        (!this.uses.includes(nextInstruction) || use == this.instruction)
+      ) {
         this.ends.unshift(use);
       }
     }
@@ -45,8 +48,7 @@ module.exports = class Binding {
 
     let nextInstruction = code[index + 1];
 
-    if (nextInstruction &&
-        !['jump', 'return'].includes(instruction.op)) {
+    if (nextInstruction && !['jump', 'return'].includes(instruction.op)) {
       if (instruction.dest) {
         if (instruction.dest.nvalue != this.to) {
           this._getUses(code, index + 1, visited);
@@ -56,9 +58,11 @@ module.exports = class Binding {
       }
     }
 
-    if (usesId(this.to, instruction) ||
-        this.uses.includes(code[target(instruction.target, code)]) ||
-        this.uses.includes(nextInstruction)) {
+    if (
+      usesId(this.to, instruction) ||
+      this.uses.includes(code[target(instruction.target, code)]) ||
+      this.uses.includes(nextInstruction)
+    ) {
       this.uses.unshift(instruction);
     }
   }
@@ -75,15 +79,16 @@ module.exports = class Binding {
 
   intersects(binding) {
     for (let instruction of [binding.instruction, ...binding.uses]) {
-      if (this.uses.includes(instruction) &&
-          !this.ends.includes(instruction)) {
+      if (this.uses.includes(instruction) && !this.ends.includes(instruction)) {
         return true;
       }
     }
 
     for (let instruction of [this.instruction, ...this.uses]) {
-      if (binding.uses.includes(instruction) &&
-          !binding.ends.includes(instruction)) {
+      if (
+        binding.uses.includes(instruction) &&
+        !binding.ends.includes(instruction)
+      ) {
         return true;
       }
     }
@@ -92,10 +97,8 @@ module.exports = class Binding {
   }
 
   siblings() {
-    return this.bindings.filter((b) =>
-      this != b &&
-      this.to == b.to &&
-      this.intersects(b)
+    return this.bindings.filter(
+      (b) => this != b && this.to == b.to && this.intersects(b)
     );
   }
 
@@ -116,4 +119,4 @@ module.exports = class Binding {
   usesId(id) {
     return this.uses.some((i) => usesId(id, i));
   }
-}
+};

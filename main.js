@@ -8,5 +8,4 @@ const yargs = require('yargs')
   .usage('$0 <command> [args]')
   .commandDir('src/commands')
   .demandCommand(1, '')
-  .help()
-  .argv;
+  .help().argv;

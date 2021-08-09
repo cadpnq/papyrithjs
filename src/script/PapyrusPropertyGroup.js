@@ -10,11 +10,13 @@ module.exports = class PapyrusPropertyGroup extends PapyrusBase {
   }
 
   asPas() {
-    return `.propertyGroup ${this.name}\n` +
-           `  .userFlags ${this.userFlags}\n` +
-           `  .docString ${this.docString}\n` +
-           this._indent(this.properties.map((p) => `.property ${p}`).join('\n'), 2) +
-           `\n.endPropertyGroup`;
+    return (
+      `.propertyGroup ${this.name}\n` +
+      `  .userFlags ${this.userFlags}\n` +
+      `  .docString ${this.docString}\n` +
+      this._indent(this.properties.map((p) => `.property ${p}`).join('\n'), 2) +
+      `\n.endPropertyGroup`
+    );
   }
 
   static readPas(tokens) {
@@ -43,4 +45,4 @@ module.exports = class PapyrusPropertyGroup extends PapyrusBase {
   getStrings() {
     return [this.name];
   }
-}
+};

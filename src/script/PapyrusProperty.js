@@ -15,13 +15,15 @@ module.exports = class PapyrusProperty extends PapyrusBase {
   }
 
   asPas() {
-    return `.property ${this.name} ${this.type} ${this.auto ? 'auto' : ''}\n` +
-           `  .userFlags ${this.userFlags}\n` +
-           `  .docString ${JSON.stringify(this.docString)}` +
-           ` ${this.auto ? `\n  .autoVar ${this.autoVar}` : ''}\n` +
-           `${this.Get ? `${this._indent(this.Get.asPas(), 2)}\n` : ''}` +
-           `${this.Set ? `${this._indent(this.Set.asPas(), 2)}\n` : ''}` +
-           `.endProperty`;
+    return (
+      `.property ${this.name} ${this.type} ${this.auto ? 'auto' : ''}\n` +
+      `  .userFlags ${this.userFlags}\n` +
+      `  .docString ${JSON.stringify(this.docString)}` +
+      ` ${this.auto ? `\n  .autoVar ${this.autoVar}` : ''}\n` +
+      `${this.Get ? `${this._indent(this.Get.asPas(), 2)}\n` : ''}` +
+      `${this.Set ? `${this._indent(this.Set.asPas(), 2)}\n` : ''}` +
+      `.endProperty`
+    );
   }
 
   static readPex(pex) {
@@ -107,4 +109,4 @@ module.exports = class PapyrusProperty extends PapyrusBase {
       ...(this.Set ? this.Set.getStrings() : [])
     ];
   }
-}
+};

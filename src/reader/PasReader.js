@@ -2,7 +2,10 @@ const TokenReader = require('./TokenReader');
 
 module.exports = class PasReader extends TokenReader {
   constructor(input) {
-    super(input, /\n|;@line|;.*|\d+\.\d+|\w+:\w+|\w+#?\w*(\[\])?|(\.|::)?\w+:?|"(?:[^\\"]||\\.)*"/g);
+    super(
+      input,
+      /\n|;@line|;.*|\d+\.\d+|\w+:\w+|\w+#?\w*(\[\])?|(\.|::)?\w+:?|"(?:[^\\"]||\\.)*"/g
+    );
   }
 
   read() {
@@ -40,4 +43,4 @@ module.exports = class PasReader extends TokenReader {
 
     return table;
   }
-}
+};

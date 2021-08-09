@@ -6,21 +6,21 @@ const deoptimize = require('./../pex/deoptimize');
 exports.command = 'fix <file>';
 exports.desc = 'fix a file for decompilation with Champollion';
 exports.builder = (yargs) => {
-  yargs.positional('file', {
-    type: 'string',
-    describe: 'the file to fix'
-  })
-  .option('output', {
-    alias: 'o',
-    type: 'string',
-    describe: 'file to write output to'
-  });
+  yargs
+    .positional('file', {
+      type: 'string',
+      describe: 'the file to fix'
+    })
+    .option('output', {
+      alias: 'o',
+      type: 'string',
+      describe: 'file to write output to'
+    });
 };
 exports.handler = (argv) => {
-  let {file, output} = argv;
+  let { file, output } = argv;
 
-  if (!file.endsWith('.pex'))
-    file += '.pex';
+  if (!file.endsWith('.pex')) file += '.pex';
 
   if (!output) {
     output = file;
@@ -44,4 +44,4 @@ exports.handler = (argv) => {
   deoptimize.rewrite(script);
 
   fs.writeFileSync(output, script.savePex().data());
-}
+};

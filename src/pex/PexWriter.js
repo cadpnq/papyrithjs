@@ -54,4 +54,4 @@ module.exports = class PexWriter {
   writeTableString(data) {
     this.writeUInt16(this.stringTable[data]);
   }
-}
+};

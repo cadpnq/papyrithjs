@@ -10,9 +10,11 @@ module.exports = class PapyrusStruct extends PapyrusBase {
   }
 
   asPas() {
-    return `.struct ${this.name}\n` +
-          `${this._printTable(this.members, 2)}\n` +
-          `.endStruct`;
+    return (
+      `.struct ${this.name}\n` +
+      `${this._printTable(this.members, 2)}\n` +
+      `.endStruct`
+    );
   }
 
   static readPex(pex) {
@@ -51,9 +53,6 @@ module.exports = class PapyrusStruct extends PapyrusBase {
   }
 
   getStrings() {
-    return [
-      this.name,
-      ...this._getStringsFromTable(this.members)
-    ];
+    return [this.name, ...this._getStringsFromTable(this.members)];
   }
-}
+};

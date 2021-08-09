@@ -17,8 +17,11 @@ module.exports = class PexRewriter {
 
   addBindingRule(instructions, scopes, rule) {
     this.bindingRules.unshift((func, binding) => {
-      if ((!instructions.length || instructions.indexOf(binding.instruction.op) >= 0) &&
-          (!scopes.length || scopes.indexOf(binding.instruction.dest.scope) >= 0)) {
+      if (
+        (!instructions.length ||
+          instructions.indexOf(binding.instruction.op) >= 0) &&
+        (!scopes.length || scopes.indexOf(binding.instruction.dest.scope) >= 0)
+      ) {
         return rule(func, binding);
       }
     });
@@ -81,4 +84,4 @@ module.exports = class PexRewriter {
       }
     }
   }
-}
+};

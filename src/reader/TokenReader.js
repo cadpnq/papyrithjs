@@ -45,4 +45,4 @@ module.exports = class TokenReader {
       return false;
     }
   }
-}
+};

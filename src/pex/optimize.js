@@ -20,7 +20,7 @@ function newLabel(func) {
   let labelNumber = 0;
   let labelName;
   do {
-    labelName = `label${labelNumber++}`
+    labelName = `label${labelNumber++}`;
   } while (func.code.find((i) => i.op == 'label' && i.name == labelName));
   let label = new PapyrusInstruction();
   label.op = 'label';
@@ -95,9 +95,11 @@ rewriter.addInstructionRule(['jump', 'jumpf', 'jumpt'], (func, index) => {
 rewriter.addInstructionRule(['jumpf', 'jumpt'], (func, index) => {
   let instruction = func.code[index];
   let targetInstruction = func.code[target(instruction.target, func.code) + 1];
-  if (targetInstruction &&
-      instruction.op == targetInstruction.op &&
-      instruction.arg1.nvalue == targetInstruction.arg1.nvalue) {
+  if (
+    targetInstruction &&
+    instruction.op == targetInstruction.op &&
+    instruction.arg1.nvalue == targetInstruction.arg1.nvalue
+  ) {
     instruction.target = targetInstruction.target;
     return true;
   }
@@ -108,10 +110,12 @@ rewriter.addInstructionRule(['jumpf', 'jumpt'], (func, index) => {
   let instruction = func.code[index];
   let targetIndex = target(instruction.target, func.code);
   let targetInstruction = func.code[targetIndex + 1];
-  if (targetInstruction &&
-      (targetInstruction.op == 'jumpf' || targetInstruction.op == 'jumpt') &&
-      instruction.op != targetInstruction.op &&
-      instruction.arg1.nvalue == targetInstruction.arg1.nvalue) {
+  if (
+    targetInstruction &&
+    (targetInstruction.op == 'jumpf' || targetInstruction.op == 'jumpt') &&
+    instruction.op != targetInstruction.op &&
+    instruction.arg1.nvalue == targetInstruction.arg1.nvalue
+  ) {
     let label = newLabel(func);
     instruction.target = label.name;
     func.code.splice(targetIndex + 2, 0, label);
@@ -129,18 +133,58 @@ rewriter.addInstructionRule(['assign', 'cast'], (func, index) => {
 });
 
 // With the exception of function calls, any instruction storing to ::nonevar can be removed.
-rewriter.addInstructionRule(['iadd', 'fadd', 'isub', 'fsub', 'imultiply', 'fmultiply', 'idiv', 'fdiv', 'imod', 'not', 'ineg', 'fneg', 'assign', 'cast', 'compareeq', 'comparelt', 'comparele', 'comparegt', 'comparege', 'strcat', 'propget', 'arraycreate', 'arraylength', 'arraygetelement', 'arrayfindelement', 'arrayrfindelement', 'is', 'structcreate', 'structget', 'arrayfindstruct', 'arrayrfindstruct'], (func, index) => {
-  let instruction = func.code[index];
-  if (instruction.dest.nvalue == '::nonevar') {
-    killInstruction(func, index);
-    return true;
+rewriter.addInstructionRule(
+  [
+    'iadd',
+    'fadd',
+    'isub',
+    'fsub',
+    'imultiply',
+    'fmultiply',
+    'idiv',
+    'fdiv',
+    'imod',
+    'not',
+    'ineg',
+    'fneg',
+    'assign',
+    'cast',
+    'compareeq',
+    'comparelt',
+    'comparele',
+    'comparegt',
+    'comparege',
+    'strcat',
+    'propget',
+    'arraycreate',
+    'arraylength',
+    'arraygetelement',
+    'arrayfindelement',
+    'arrayrfindelement',
+    'is',
+    'structcreate',
+    'structget',
+    'arrayfindstruct',
+    'arrayrfindstruct'
+  ],
+  (func, index) => {
+    let instruction = func.code[index];
+    if (instruction.dest.nvalue == '::nonevar') {
+      killInstruction(func, index);
+      return true;
+    }
   }
-});
+);
 
 // A cast instruction where dest and source are of the same type can be turned into an assign instruction.
 rewriter.addInstructionRule(['cast'], (func, index) => {
   let instruction = func.code[index];
-  if (instruction.dest.idType == (instruction.arg1.type == 'id' ? instruction.arg1.idType : instruction.arg1.type)) {
+  if (
+    instruction.dest.idType ==
+    (instruction.arg1.type == 'id'
+      ? instruction.arg1.idType
+      : instruction.arg1.type)
+  ) {
     instruction.op = 'assign';
     return true;
   }
@@ -148,9 +192,12 @@ rewriter.addInstructionRule(['cast'], (func, index) => {
 
 // Any instruction except function calls that store a value that is not used can be removed.
 rewriter.addBindingRule([], ['temp', 'local', 'parameter'], (func, binding) => {
-  if (binding.uses.length > 0 ||
-      binding.instruction.dest.nvalue == '::nonevar' ||
-      ['callmethod', 'callparent', 'callstatic'].includes(binding.instruction.op)) return;
+  if (
+    binding.uses.length > 0 ||
+    binding.instruction.dest.nvalue == '::nonevar' ||
+    ['callmethod', 'callparent', 'callstatic'].includes(binding.instruction.op)
+  )
+    return;
   killInstruction(func, binding.index);
   return true;
 });
@@ -160,16 +207,21 @@ rewriter.addBindingRule([], ['temp'], (func, binding) => {
   let these = [binding].concat(binding.siblings());
   for (let binding2 of binding.bindings) {
     if (binding.to == binding2.to) return false;
-    if (binding2.instruction.dest.scope != 'temp' ||
-        binding.instruction.dest.idType != binding2.instruction.dest.idType) continue;
+    if (
+      binding2.instruction.dest.scope != 'temp' ||
+      binding.instruction.dest.idType != binding2.instruction.dest.idType
+    )
+      continue;
     let those = binding.bindings.filter((b) => b.to == binding2.to);
     let valid = true;
     for (let x of these) {
       for (let y of those) {
         if (x.intersects(y)) {
           valid = false;
-          if (!x.usesId(y.to) &&
-              x.ends.every((i) => i.dest && i.dest.nvalue == y.to)) {
+          if (
+            !x.usesId(y.to) &&
+            x.ends.every((i) => i.dest && i.dest.nvalue == y.to)
+          ) {
             valid = true;
           }
         }
@@ -201,9 +253,12 @@ rewriter.addBindingRule(['not'], ['temp'], (func, binding) => {
 // Anything storing to a temp that is only used in an assign to another variable can be rewritten to store directly to that variable.
 rewriter.addBindingRule([], ['temp'], (func, binding) => {
   let next = binding.uses[0];
-  if (binding.uses.length != 1 ||
-      next.op != 'assign' ||
-      next.arg1 != binding.to) return;
+  if (
+    binding.uses.length != 1 ||
+    next.op != 'assign' ||
+    next.arg1 != binding.to
+  )
+    return;
   let nonevar = getNonevar(func);
   binding.instruction.dest = next.dest;
   next.dest = nonevar;

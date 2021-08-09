@@ -9,7 +9,7 @@ class PapyrusInstruction extends PapyrusBase {
     this.args = [];
     this.line = 0;
     this.targetOffset = 0;
-    this.definition = {names: []};
+    this.definition = { names: [] };
   }
 
   set op(value) {
@@ -67,7 +67,9 @@ class PapyrusInstruction extends PapyrusBase {
     if (this.op == 'label') {
       return this.name + ':';
     } else {
-      return `${this.op} ${this.args.join(' ')} ${this.line ? `;@line ${this.line}` : ''}`;
+      return `${this.op} ${this.args.join(' ')} ${
+        this.line ? `;@line ${this.line}` : ''
+      }`;
     }
   }
 
@@ -76,7 +78,7 @@ class PapyrusInstruction extends PapyrusBase {
       this.definitions = {};
       this.prototype.definitions = this.definitions;
     }
-    this.definitions[opcode] = {opcode, name, arity, names, varargs};
+    this.definitions[opcode] = { opcode, name, arity, names, varargs };
   }
 
   static defineInstructions(definitions) {
@@ -89,7 +91,7 @@ class PapyrusInstruction extends PapyrusBase {
     let instruction = new PapyrusInstruction();
 
     let op = pex.readUInt8();
-    let {name, arity, varargs} = this.definitions[op];
+    let { name, arity, varargs } = this.definitions[op];
     instruction.op = name;
 
     while (arity--) {
@@ -134,7 +136,7 @@ class PapyrusInstruction extends PapyrusBase {
 
   writePex(pex) {
     if (this.op == 'label') return;
-    let {opcode, arity, varargs} = this.definition;
+    let { opcode, arity, varargs } = this.definition;
     pex.writeUInt8(opcode);
 
     for (let i = 0; i <= this.args.length; i++) {
